@@ -73,6 +73,59 @@ const EXP = [
     incl:["Bait and tackle","Crew help","Fish cleaning","Galley on board"], meet:"Fisherman's Village landing",
     addons:[{id:"rod",name:"Rod rental",price:15}]}
 ];
-const C = { CATS, EXP };
+
+/* Photos: free under the Unsplash License (https://unsplash.com/license), loaded from Unsplash's CDN.
+   Each experience: [main photo id, photographer], then extra gallery shots. Swap in partners' own photos later. */
+const U = (id) => "https://images.unsplash.com/photo-" + id;
+const P = {
+  mdr:      ["1649305115865-e1d7381c55dc", "Edwen Lopez"],          // Marina del Rey harbor
+  sail:     ["1586763209375-11dd70fcdc47", "Mads Schmidt Rasmussen"],
+  sailDock: ["1569150159137-fec7ce0a077d", "Moritz Kindler"],
+  boatDusk: ["1603662423580-2148984328de", "Rafael Garcin"],
+  yacht:    ["1736299297925-da1c8b1e2072", "Cemrecan Yurtman"],
+  whale:    ["1602265133556-dcc08d51340c", "Mike Doherty"],        // Monterey Bay, CA
+  sup:      ["1526188717906-ab4a2f949f26", "Matt Zhou"],
+  sup2:     ["1639107835059-31d3591dcdcc", "Manoj Seenivasan"],
+  kayak:    ["1586074788305-3f92fa6b034d", "Derek Baumgartner"],
+  ride:     ["1746260182646-56e2923282ef", "Kaptured by Kasia"],   // Santa Monica, CA
+  strand:   ["1532993134-5a9c16eeaeb5", "Viviana Rishe"],          // Santa Monica, CA
+  cruiser:  ["1661748453006-6d42ef0c59ca", "Marissa & Eric"],
+  bikeRail: ["1768325400062-2b63fec226c3", "Margaux Wolf"],
+  picnic:   ["1714773550457-86b582baca90", "Daniel Manta"],
+  beachFun: ["1762740479086-058f54289f3f", "Kellen Riggin"],
+  couple:   ["1590595154555-863e37234933", "Jacob Heston"],
+  walk:     ["1608283041437-a46090409bb2", "Johannes Beilharz"],
+  balloons: ["1528741319675-fab004a2248d", "Liana Mikah"],
+  bouquet:  ["1567696153798-9111f9cd3d0d", "Carrie Beth Williams"],
+  vase:     ["1579711220348-683ae3f36c3f", "Sebastian Coman"],
+  window:   ["1667604987970-4bbd6ed51d0d", "Jannik"],
+  terrace:  ["1744352029595-28cba50e6fa0", "Meg von Haartman"],
+  chef:     ["1528713066454-eb7d78a98ce0", "Kevin McCutcheon"],
+  fishing:  ["1551942296-97384c850440", "Richard R"]
+};
+const SHOTS = {
+  "sunset-sail": ["sail","boatDusk","sailDock","mdr"],
+  "private-yacht": ["yacht","mdr","boatDusk","sail"],
+  "harbor-boat": ["mdr","sailDock","yacht","boatDusk"],
+  "whale-watch": ["whale","boatDusk","mdr","sail"],
+  "sup-lesson": ["sup","sup2","kayak","beachFun"],
+  "kayak-sealions": ["kayak","sup2","mdr","sup"],
+  "coast-ride": ["ride","strand","bikeRail","cruiser"],
+  "cruiser": ["cruiser","bikeRail","strand","ride"],
+  "sunset-picnic": ["picnic","couple","beachFun","walk"],
+  "proposal": ["couple","picnic","walk","bouquet"],
+  "room-celebration": ["balloons","bouquet","vase","couple"],
+  "bouquet": ["bouquet","vase","balloons","picnic"],
+  "turndown": ["vase","bouquet","couple","window"],
+  "dock-dinner": ["window","terrace","chef","mdr"],
+  "private-chef": ["chef","window","terrace","couple"],
+  "fishing": ["fishing","whale","mdr","boatDusk"]
+};
+EXP.forEach((e) => { e.photos = (SHOTS[e.id] || ["mdr"]).map((k) => ({ src: U(P[k][0]), by: P[k][1] })); });
+const WELCOME = {
+  center: { src: U(P.mdr[0]), by: P.mdr[1] },
+  orbit: ["sup","picnic","ride","yacht","kayak","bouquet","beachFun","whale","sail","strand","couple"].map((k) => ({ src: U(P[k][0]), by: P[k][1] }))
+};
+const C = { CATS, EXP, WELCOME };
 if (typeof module !== "undefined" && module.exports) module.exports = C; else root.MAREE_CATALOG = C;
 })(typeof self !== "undefined" ? self : this);
