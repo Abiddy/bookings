@@ -1,96 +1,31 @@
-/* Marée catalog: sample experiences to replace with real partners.
-   Shared by the browser (window.MAREE_CATALOG) and the server (require), so prices are checked server-side. */
+/* Marée catalog: categories, options and the questions each request form asks.
+   Shared by the browser (window.MAREE_CATALOG) and the server (require).
+   Prices are typical ranges shown to guests; vendors send the real quote in chat.
+   Photos are free under the Unsplash License (https://unsplash.com/license). Swap in partners' own photos later. */
 (function (root) {
 "use strict";
-const CATS = [
-  {id:"water", name:"On the water", icon:"sail"},
-  {id:"paddle", name:"Paddle & play", icon:"paddle"},
-  {id:"coast", name:"Bikes & coast", icon:"bike"},
-  {id:"occasion", name:"Celebrations", icon:"ring"},
-  {id:"flowers", name:"Flowers & gifts", icon:"flower"},
-  {id:"dining", name:"Dining", icon:"glass"}
-];
-const EXP = [
-  {id:"sunset-sail", cat:"water", title:"Sunset harbor sail", motif:"sail", sky:"dusk", price:85, unit:"person", dur:"2 hrs", cap:"Up to 12 guests", times:["sunset-90","sunset-30"], partner:"Sailing charter partner", place:"Main channel dock",
-    blurb:"Glide out past the breakwater on a classic sloop as the light turns gold over Santa Monica Bay. Your skipper handles the lines; you handle the view. Blankets are on board for the ride back in, and you're welcome to bring a bottle of your own.",
-    incl:["Licensed skipper and crew","Soft drinks and sparkling water","Blankets for the ride back","Bring-your-own wine welcome"], meet:"Main channel guest dock, a 6 minute walk from the lobby",
-    addons:[{id:"champ",name:"Bottle of champagne on board",price:85},{id:"photo",name:"Onboard photographer, 30 min",price:150}]},
-  {id:"private-yacht", cat:"water", title:"Private yacht charter", motif:"yacht", sky:"day", price:1200, unit:"group", dur:"3 hrs", cap:"Up to 10 guests", times:["11:00 AM","2:00 PM","sunset-120"], partner:"Yacht charter partner", place:"Yacht basin",
-    blurb:"A private motor yacht with captain and host. Cruise the coast toward Malibu, drop anchor for a swim when it's warm, and come back to the marina on your own schedule.",
-    incl:["Captain and host","Charcuterie and fruit board","Premium sound system","Towels and swim deck"], meet:"Yacht basin, gate assigned at booking",
-    addons:[{id:"champ",name:"Two bottles of champagne",price:170},{id:"chef",name:"Chef-prepared lunch",price:320}]},
-  {id:"harbor-boat", cat:"water", title:"Electric harbor boat", motif:"duffy", sky:"day", price:160, unit:"boat", dur:"90 min", cap:"Up to 8 guests", times:["10:00 AM","12:00 PM","2:00 PM","sunset-60"], partner:"Harbor boat rental partner", place:"Fisherman's Village",
-    blurb:"Captain your own quiet electric boat around the inner harbor. No license needed, just a short walkthrough at the dock. Bring snacks and a playlist.",
-    incl:["Safety briefing and life jackets","Bluetooth speaker","Harbor map with sea lion spots","Cooler with ice"], meet:"Fisherman's Village dock",
-    addons:[{id:"snack",name:"Snack and drinks basket",price:45}]},
-  {id:"whale-watch", cat:"water", title:"Whale & dolphin watch", motif:"whale", sky:"morning", price:65, unit:"person", dur:"2.5 hrs", cap:"Shared boat", times:["9:00 AM","12:30 PM"], partner:"Whale watching partner", place:"Fisherman's Village",
-    blurb:"Head offshore with a naturalist to look for gray whales on their winter migration, plus the dolphin pods that run along the coast all year.",
-    incl:["Naturalist guide","Indoor and deck seating","Binoculars on loan","Free rebooking if nothing is spotted"], meet:"Fisherman's Village dock", addons:[]},
-  {id:"sup-lesson", cat:"paddle", title:"Stand-up paddle lesson", motif:"paddle", sky:"morning", price:75, unit:"person", dur:"90 min", cap:"Up to 6 guests", times:["8:00 AM","10:00 AM","1:00 PM"], partner:"Paddle school partner", place:"Mother's Beach",
-    blurb:"Learn on the calm water of Mother's Beach, the marina's sheltered lagoon. Most people are standing within ten minutes.",
-    incl:["Board, paddle and leash","Wetsuit if you want one","Certified instructor","Lockers for your things"], meet:"Mother's Beach boathouse",
-    addons:[{id:"gopro",name:"GoPro footage of your session",price:35}]},
-  {id:"kayak-sealions", cat:"paddle", title:"Kayak with the sea lions", motif:"kayak", sky:"day", price:55, unit:"person", dur:"2 hrs", cap:"Up to 10 guests", times:["9:00 AM","11:30 AM","2:00 PM"], partner:"Paddle school partner", place:"Mother's Beach",
-    blurb:"A guided paddle through the main channel to the buoys where sea lions haul out to sun themselves. Tandem kayaks available.",
-    incl:["Single or tandem kayak","Guide","Dry bag","Water and snacks"], meet:"Mother's Beach boathouse", addons:[]},
-  {id:"coast-ride", cat:"coast", title:"Guided coast ride to Venice", motif:"bike", sky:"day", price:69, unit:"person", dur:"2 hrs", cap:"Up to 8 riders", times:["9:30 AM","1:00 PM","sunset-120"], partner:"Bike tour partner", place:"Hotel entrance",
-    blurb:"Ride the beach path past the Venice canals, the skate park and Muscle Beach with a local guide. E-bikes or cruisers, your choice.",
-    incl:["E-bike or cruiser","Helmet and lock","Local guide","Coffee stop in Venice"], meet:"Hotel front entrance",
-    addons:[{id:"ebike",name:"Upgrade to e-bike",price:20}]},
-  {id:"cruiser", cat:"coast", title:"Beach cruiser, half day", motif:"bike", sky:"morning", price:35, unit:"bike", dur:"4 hrs", cap:"Per bike", times:["9:00 AM","1:00 PM"], partner:"Bike rental partner", place:"Delivered to lobby",
-    blurb:"A comfortable cruiser delivered to the lobby, ready for an easy ride along the strand to Playa del Rey or Santa Monica.",
-    incl:["Cruiser with basket","Helmet and lock","Route card","Delivered to the hotel"], meet:"Delivered to the hotel lobby",
-    addons:[{id:"ebike",name:"Make it an e-bike",price:25}]},
-  {id:"sunset-picnic", cat:"occasion", title:"Sunset beach picnic", motif:"picnic", sky:"dusk", price:295, unit:"setup for 2", dur:"2 hrs", cap:"For 2", times:["sunset-90"], partner:"Picnic styling partner", place:"Dockweiler Beach",
-    blurb:"We set the scene before you arrive: low table, linen, cushions, candles and a grazing board on the sand. You just walk down and sit.",
-    incl:["Styled low table and cushions","Grazing board for two","Candles and lanterns","Setup and cleanup"], meet:"Dockweiler Beach, exact spot texted before",
-    addons:[{id:"champ",name:"Champagne and flutes",price:85},{id:"roses",name:"Dozen red roses",price:95},{id:"photo",name:"Photographer, 30 min",price:150}]},
-  {id:"proposal", cat:"occasion", title:"Proposal setup", motif:"ring", sky:"dusk", price:850, unit:"setup", dur:"Planned with you", cap:"For 2", times:["sunset-60"], partner:"Picnic styling partner", place:"Chosen together",
-    blurb:"A planner works with you on the place, the flowers and the moment, then hides a photographer nearby. You only have to ask the question.",
-    incl:["Planning call","Floral arch or petal aisle","Hidden photographer, 1 hr","Champagne toast"], meet:"Location chosen together",
-    addons:[{id:"violin",name:"Live violinist",price:350}]},
-  {id:"room-celebration", cat:"occasion", title:"Room celebration package", motif:"balloon", sky:"night", price:225, unit:"room", dur:"Ready on arrival", cap:"Any occasion", times:["Before 3:00 PM","Before 6:00 PM"], partner:"Event décor partner", place:"Your room",
-    blurb:"Balloons, rose petals, a banner and a cake waiting in your room for a birthday or anniversary.",
-    incl:["Balloon installation","Petals and candles","Personalized banner","Mini cake from a local bakery"], meet:"Set up in your room",
-    addons:[{id:"champ",name:"Champagne on ice",price:85}]},
-  {id:"bouquet", cat:"flowers", title:"Seasonal bouquet", motif:"flower", sky:"day", price:95, unit:"bouquet", dur:"Delivered", cap:"To your room", times:["Morning","Afternoon","Evening"], partner:"Florist partner", place:"Your room",
-    blurb:"A hand-tied arrangement of what's best at the LA Flower Market this week, wrapped and delivered to your door.",
-    incl:["Seasonal stems","Vase included","Handwritten card","Delivery to your room"], meet:"Delivered to your room",
-    addons:[{id:"choc",name:"Box of local chocolates",price:30},{id:"large",name:"Make it grand",price:80}]},
-  {id:"turndown", cat:"flowers", title:"Rose petal turndown", motif:"ring", sky:"night", price:145, unit:"room", dur:"Evening", cap:"For 2", times:["Evening"], partner:"Florist partner", place:"Your room",
-    blurb:"While you're at dinner, we scatter petals, light flameless candles and leave chocolate-dipped strawberries on the nightstand.",
-    incl:["Rose petals","Flameless candles","Chocolate-dipped strawberries","Handwritten note"], meet:"Set up in your room",
-    addons:[{id:"champ",name:"Champagne on ice",price:85}]},
-  {id:"dock-dinner", cat:"dining", title:"Waterfront table for two", motif:"glass", sky:"night", price:40, unit:"booking", dur:"Reservation", cap:"Deposit toward bill", times:["6:00 PM","7:30 PM","9:00 PM"], partner:"Restaurant partner", place:"The promenade",
-    blurb:"A window table at a harbor-view restaurant with a welcome glass of sparkling wine. Your deposit comes off the bill.",
-    incl:["Reserved window table","Welcome glass of sparkling wine","Deposit applied to your bill","Easy rescheduling"], meet:"A 4 minute walk along the promenade", addons:[]},
-  {id:"private-chef", cat:"dining", title:"Private chef on your balcony", motif:"glass", sky:"dusk", price:180, unit:"person", dur:"3 courses", cap:"2 to 6 guests", times:["6:30 PM","7:30 PM"], partner:"Private chef partner", place:"Your suite",
-    blurb:"A chef cooks three seasonal courses in your suite and serves them at sunset. Dietary needs handled with a quick call.",
-    incl:["Three-course menu","Chef and server","Table setting","Cleanup"], meet:"In your suite",
-    addons:[{id:"pair",name:"Wine pairing, per person",price:65}]},
-  {id:"fishing", cat:"water", title:"Half-day sport fishing", motif:"fish", sky:"morning", price:79, unit:"person", dur:"5 hrs", cap:"Shared boat", times:["6:00 AM","12:30 PM"], partner:"Sport fishing partner", place:"Fisherman's Village",
-    blurb:"Head out to the kelp beds for calico bass and rockfish. Rod rental and a one-day license can be added at the dock.",
-    incl:["Bait and tackle","Crew help","Fish cleaning","Galley on board"], meet:"Fisherman's Village landing",
-    addons:[{id:"rod",name:"Rod rental",price:15}]}
-];
 
-/* Photos: free under the Unsplash License (https://unsplash.com/license), loaded from Unsplash's CDN.
-   Each experience: [main photo id, photographer], then extra gallery shots. Swap in partners' own photos later. */
 const U = (id) => "https://images.unsplash.com/photo-" + id;
 const P = {
-  mdr:      ["1649305115865-e1d7381c55dc", "Edwen Lopez"],          // Marina del Rey harbor
+  mdr:      ["1649305115865-e1d7381c55dc", "Edwen Lopez"],
   sail:     ["1586763209375-11dd70fcdc47", "Mads Schmidt Rasmussen"],
   sailDock: ["1569150159137-fec7ce0a077d", "Moritz Kindler"],
   boatDusk: ["1603662423580-2148984328de", "Rafael Garcin"],
   yacht:    ["1736299297925-da1c8b1e2072", "Cemrecan Yurtman"],
-  whale:    ["1602265133556-dcc08d51340c", "Mike Doherty"],        // Monterey Bay, CA
+  whale:    ["1602265133556-dcc08d51340c", "Mike Doherty"],
   sup:      ["1526188717906-ab4a2f949f26", "Matt Zhou"],
   sup2:     ["1639107835059-31d3591dcdcc", "Manoj Seenivasan"],
   kayak:    ["1586074788305-3f92fa6b034d", "Derek Baumgartner"],
-  ride:     ["1746260182646-56e2923282ef", "Kaptured by Kasia"],   // Santa Monica, CA
-  strand:   ["1532993134-5a9c16eeaeb5", "Viviana Rishe"],          // Santa Monica, CA
+  surf:     ["1713792003769-d87da4e9b706", "Julia Solonina"],
+  ride:     ["1746260182646-56e2923282ef", "Kaptured by Kasia"],
+  strand:   ["1532993134-5a9c16eeaeb5", "Viviana Rishe"],
   cruiser:  ["1661748453006-6d42ef0c59ca", "Marissa & Eric"],
   bikeRail: ["1768325400062-2b63fec226c3", "Margaux Wolf"],
+  canals:   ["1689629517939-b49da24704e1", "Jordan Proietti"],
+  hollywood:["1766273686827-2d592ec2e566", "Ars M"],
+  convert:  ["1463452689123-df7787f34cac", "Christopher Windus"],
+  classic:  ["1600382684764-1424d0b1d9ba", "Craig Marolf"],
+  suv:      ["1590094585554-ceb424f815cf", "Matthew Harris"],
   picnic:   ["1714773550457-86b582baca90", "Daniel Manta"],
   beachFun: ["1762740479086-058f54289f3f", "Kellen Riggin"],
   couple:   ["1590595154555-863e37234933", "Jacob Heston"],
@@ -101,31 +36,110 @@ const P = {
   window:   ["1667604987970-4bbd6ed51d0d", "Jannik"],
   terrace:  ["1744352029595-28cba50e6fa0", "Meg von Haartman"],
   chef:     ["1528713066454-eb7d78a98ce0", "Kevin McCutcheon"],
+  buffet:   ["1742436448781-fe5eb077abd4", "Ezebunwo Omachi"],
   fishing:  ["1551942296-97384c850440", "Richard R"]
 };
-const SHOTS = {
-  "sunset-sail": ["sail","boatDusk","sailDock","mdr"],
-  "private-yacht": ["yacht","mdr","boatDusk","sail"],
-  "harbor-boat": ["mdr","sailDock","yacht","boatDusk"],
-  "whale-watch": ["whale","boatDusk","mdr","sail"],
-  "sup-lesson": ["sup","sup2","kayak","beachFun"],
-  "kayak-sealions": ["kayak","sup2","mdr","sup"],
-  "coast-ride": ["ride","strand","bikeRail","cruiser"],
-  "cruiser": ["cruiser","bikeRail","strand","ride"],
-  "sunset-picnic": ["picnic","couple","beachFun","walk"],
-  "proposal": ["couple","picnic","walk","bouquet"],
-  "room-celebration": ["balloons","bouquet","vase","couple"],
-  "bouquet": ["bouquet","vase","balloons","picnic"],
-  "turndown": ["vase","bouquet","couple","window"],
-  "dock-dinner": ["window","terrace","chef","mdr"],
-  "private-chef": ["chef","window","terrace","couple"],
-  "fishing": ["fishing","whale","mdr","boatDusk"]
+const ph = (k) => ({ src: U(P[k][0]), by: P[k][1] });
+
+/* Question library. Labels and choice names are translated in i18n.js by key. */
+const FIELDS = {
+  date:     { type: "date", required: true },
+  dates:    { type: "daterange", required: true },
+  time:     { type: "chips", choices: ["morning", "afternoon", "sunset", "evening", "flexible"] },
+  guests:   { type: "stepper", min: 1, max: 60, def: 2 },
+  duration: { type: "chips", choices: ["d2", "d3", "d4", "dday", "unsure"] },
+  level:    { type: "chips", choices: ["first", "some", "confident"] },
+  pickup:   { type: "chips", choices: ["hotel", "lax", "other"] },
+  carType:  { type: "chips", choices: ["convertible", "suv", "luxury", "electric", "any"] },
+  occasion: { type: "chips", choices: ["birthday", "anniversary", "proposal", "family", "business", "other"] },
+  budget:   { type: "chips", choices: ["b1", "b2", "b3", "b4", "unsure"] }
 };
-EXP.forEach((e) => { e.photos = (SHOTS[e.id] || ["mdr"]).map((k) => ({ src: U(P[k][0]), by: P[k][1] })); });
+
+const CATS = [
+  { id: "boats", name: "Boats & yachts", photo: ph("sail"), fields: ["date", "time", "guests", "duration", "budget"] },
+  { id: "tours", name: "Tours", photo: ph("canals"), fields: ["date", "time", "guests", "budget"] },
+  { id: "water", name: "Beach & water", photo: ph("sup"), fields: ["date", "time", "guests", "level", "budget"] },
+  { id: "cars", name: "Car rental", photo: ph("convert"), fields: ["dates", "carType", "pickup", "guests", "budget"] },
+  { id: "catering", name: "Catering & chefs", photo: ph("chef"), fields: ["date", "time", "guests", "occasion", "budget"] },
+  { id: "occasions", name: "Celebrations & flowers", photo: ph("bouquet"), fields: ["date", "occasion", "guests", "budget"] }
+];
+
+const OPTIONS = [
+  { id: "sunset-sail", cat: "boats", title: "Sunset harbor sail", from: 85, unit: "person", photos: [ph("sail"), ph("boatDusk"), ph("sailDock")],
+    blurb: "A classic sailboat out past the breakwater as the light turns gold over Santa Monica Bay.",
+    incl: ["Skipper and crew", "Drinks on board", "About 2 hours"] },
+  { id: "private-yacht", cat: "boats", title: "Private yacht charter", from: 1200, unit: "group", photos: [ph("yacht"), ph("mdr"), ph("boatDusk")],
+    blurb: "A private motor yacht with captain and host for your group. Cruise the coast toward Malibu.",
+    incl: ["Captain and host", "Snacks and sound system", "3 hours or more"] },
+  { id: "harbor-boat", cat: "boats", title: "Electric harbor boat", from: 160, unit: "boat", photos: [ph("mdr"), ph("sailDock"), ph("yacht")],
+    blurb: "Drive your own quiet electric boat around the inner harbor. No license needed.",
+    incl: ["Up to 8 people", "Life jackets", "90 minutes or more"] },
+  { id: "whale-watch", cat: "boats", title: "Whale & dolphin watching", from: 65, unit: "person", photos: [ph("whale"), ph("boatDusk"), ph("mdr")],
+    blurb: "Head offshore with a naturalist to look for gray whales and dolphin pods.",
+    incl: ["Naturalist guide", "Shared boat", "About 2.5 hours"] },
+  { id: "fishing", cat: "boats", title: "Sport fishing trip", from: 79, unit: "person", photos: [ph("fishing"), ph("whale"), ph("mdr")],
+    blurb: "Half or full day out to the kelp beds for calico bass and rockfish.",
+    incl: ["Bait and tackle", "Crew help", "Fish cleaning"] },
+
+  { id: "bike-tour", cat: "tours", title: "Guided bike tour to Venice", from: 69, unit: "person", photos: [ph("ride"), ph("strand"), ph("bikeRail")],
+    blurb: "Ride the beach path past the canals, the skate park and Muscle Beach with a local guide.",
+    incl: ["Bike or e-bike", "Helmet", "Local guide"] },
+  { id: "venice-canals", cat: "tours", title: "Venice canals walk", from: 45, unit: "person", photos: [ph("canals"), ph("strand"), ph("walk")],
+    blurb: "A relaxed walking tour of the Venice canals, Abbot Kinney and the boardwalk.",
+    incl: ["Local guide", "About 2 hours", "Coffee stop"] },
+  { id: "la-highlights", cat: "tours", title: "Hollywood & LA highlights", from: 99, unit: "person", photos: [ph("hollywood"), ph("strand"), ph("convert")],
+    blurb: "A driven tour of the Hollywood sign, Sunset Strip, Beverly Hills and Santa Monica.",
+    incl: ["Pickup at the hotel", "Driver-guide", "About 5 hours"] },
+  { id: "kayak-tour", cat: "tours", title: "Kayak with the sea lions", from: 55, unit: "person", photos: [ph("kayak"), ph("sup2"), ph("mdr")],
+    blurb: "A guided paddle through the main channel to where sea lions haul out on the buoys.",
+    incl: ["Kayak and gear", "Guide", "About 2 hours"] },
+
+  { id: "sup-lesson", cat: "water", title: "Stand-up paddle lesson", from: 75, unit: "person", photos: [ph("sup"), ph("sup2"), ph("beachFun")],
+    blurb: "Learn on the calm water of Mother's Beach, the marina's sheltered lagoon.",
+    incl: ["Board and paddle", "Instructor", "90 minutes"] },
+  { id: "surf-lesson", cat: "water", title: "Surf lesson", from: 95, unit: "person", photos: [ph("surf"), ph("beachFun"), ph("walk")],
+    blurb: "Beginner-friendly lessons at Venice or Santa Monica with a certified coach.",
+    incl: ["Board and wetsuit", "Coach", "About 2 hours"] },
+  { id: "beach-bikes", cat: "water", title: "Beach cruiser rental", from: 35, unit: "bike", photos: [ph("cruiser"), ph("bikeRail"), ph("strand")],
+    blurb: "Cruisers or e-bikes delivered to the lobby, ready for the beach path.",
+    incl: ["Helmet and lock", "Delivered to the hotel", "Half or full day"] },
+
+  { id: "convertible", cat: "cars", title: "Convertible rental", from: 150, unit: "day", photos: [ph("convert"), ph("classic"), ph("strand")],
+    blurb: "Top-down driving on the Pacific Coast Highway. Delivered to the hotel.",
+    incl: ["Delivery and pickup", "Insurance options", "Daily or weekly"] },
+  { id: "luxury-car", cat: "cars", title: "Luxury & SUV rental", from: 220, unit: "day", photos: [ph("suv"), ph("convert"), ph("classic")],
+    blurb: "Premium SUVs and luxury cars for families or a special trip.",
+    incl: ["Delivery and pickup", "Child seats on request", "Daily or weekly"] },
+  { id: "chauffeur", cat: "cars", title: "Private driver", from: 95, unit: "hour", photos: [ph("suv"), ph("hollywood"), ph("convert")],
+    blurb: "A professional driver for airport runs, dinners or a day around LA.",
+    incl: ["Airport pickup", "Hourly or by trip", "Sedan or SUV"] },
+
+  { id: "private-chef", cat: "catering", title: "Private chef dinner", from: 150, unit: "person", photos: [ph("chef"), ph("window"), ph("terrace")],
+    blurb: "A chef cooks and serves a seasonal menu in your suite or rental.",
+    incl: ["Menu planned with you", "Chef and server", "Cleanup"] },
+  { id: "event-catering", cat: "catering", title: "Event & party catering", from: 45, unit: "person", photos: [ph("buffet"), ph("chef"), ph("terrace")],
+    blurb: "Catering for birthdays, team events and family gatherings, from canapés to full buffets.",
+    incl: ["Custom menu", "Staff available", "Setup and cleanup"] },
+  { id: "beach-picnic", cat: "catering", title: "Beach picnic", from: 295, unit: "setup", photos: [ph("picnic"), ph("couple"), ph("beachFun")],
+    blurb: "A styled picnic on the sand with a grazing board, cushions and candles.",
+    incl: ["Styled setup", "Food for your group", "Setup and cleanup"] },
+
+  { id: "proposal", cat: "occasions", title: "Proposal setup", from: 850, unit: "setup", photos: [ph("couple"), ph("picnic"), ph("walk")],
+    blurb: "A planner designs the place, flowers and moment, with a hidden photographer.",
+    incl: ["Planning call", "Flowers and décor", "Photographer"] },
+  { id: "room-celebration", cat: "occasions", title: "Room decoration", from: 225, unit: "room", photos: [ph("balloons"), ph("bouquet"), ph("vase")],
+    blurb: "Balloons, petals, a banner and a cake waiting in your room.",
+    incl: ["Balloons and petals", "Personal banner", "Cake on request"] },
+  { id: "flowers", cat: "occasions", title: "Flower delivery", from: 95, unit: "bouquet", photos: [ph("bouquet"), ph("vase"), ph("balloons")],
+    blurb: "Hand-tied seasonal flowers delivered to the hotel.",
+    incl: ["Seasonal stems", "Vase included", "Handwritten card"] }
+];
+
 const WELCOME = {
-  center: { src: U(P.mdr[0]), by: P.mdr[1] },
-  orbit: ["sup","picnic","ride","yacht","kayak","bouquet","beachFun","whale","sail","strand","couple"].map((k) => ({ src: U(P[k][0]), by: P[k][1] }))
+  center: ph("mdr"),
+  orbit: ["sup", "picnic", "ride", "yacht", "kayak", "bouquet", "beachFun", "whale", "sail", "convert", "couple"].map(ph)
 };
-const C = { CATS, EXP, WELCOME };
+
+const C = { CATS, OPTIONS, FIELDS, WELCOME };
 if (typeof module !== "undefined" && module.exports) module.exports = C; else root.MAREE_CATALOG = C;
 })(typeof self !== "undefined" ? self : this);

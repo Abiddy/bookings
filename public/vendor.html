@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Marée Partner Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/shared.css">
+<link rel="stylesheet" href="/staff.css">
+</head>
+<body>
+<div id="root"></div>
+<script src="/i18n.js"></script>
+<script src="/catalog.js"></script>
+<script src="/shared.js"></script>
+<script src="/staff.js"></script>
+<script>
+(() => {
+"use strict";
+const { esc, store, api, Live, connBanner, toast, makeT } = window.M;
+const LANGS = window.MAREE_I18N.LANGS, NAMES = window.MAREE_I18N.I18N;
+const root = document.getElementById("root");
+const params = new URLSearchParams(location.search);
+if (params.get("k")) { store.set("maree-vk", params.get("k")); history.replaceState(null, "", location.pathname + location.hash); }
+let key = store.get("maree-vk", "");
+
+function login(msg) {
+  root.innerHTML = `<form class="login pad" id="lf">
+    <h1>Marée partner inbox</h1>
+    <p class="muted">Open the private link Marée sent you, or paste it here.</p>
+    <div class="f"><label for="lk">Your partner link</label><div class="inp"><input id="lk" autocomplete="off" placeholder="https://…/vendor?k=…"></div></div>
+    <p class="err" ${msg ? "" : "hidden"}>${esc(msg || "")}</p>
+    <button class="btn btn-ink" type="submit">Open inbox</button></form>`;
+  document.getElementById("lf").onsubmit = (e) => {
+    e.preventDefault();
+    const v = document.getElementById("lk").value.trim();
+    const k = (v.match(/[?&]k=([A-Za-z0-9_-]+)/) || [])[1] || v;
+    if (!k) return;
+    store.set("maree-vk", k); key = k; boot();
+  };
+}
+
+async function boot() {
+  if (!key) return login();
+  let me;
+  try { me = (await api("/api/vendor/me", { auth: { vendorKey: key } })).me; }
+  catch (e) { store.del("maree-vk"); key = ""; return login(e.status === 401 ? "That link doesn't work anymore. Ask Marée for a new one." : "Couldn't connect. Try again."); }
+  root.innerHTML = `<div class="shell">
+    <header class="topbar pad">
+      <div class="brand"><b>MARÉE</b><span>${esc(me.name)}</span></div>
+      <div class="acts">
+        <label class="sr" for="vl">Language you read and write in</label>
+        <select id="vl" title="Guest messages are translated into this language">${LANGS.map((l) => `<option value="${l}" ${l === me.lang ? "selected" : ""}>${esc(NAMES[l].lang_name)}</option>`).join("")}</select>
+        <button class="btn btn-line btn-sm" type="button" id="al">Turn on alerts</button>
+        <button class="btn btn-line btn-sm" type="button" id="so">Sign out</button>
+      </div>
+    </header>
+    <div id="inbox" class="view" style="overflow:hidden"></div>
+  </div>`;
+  const live = new Live({ vendorKey: key });
+  connBanner(live, makeT("en"));
+  live.on("unauthorized", () => { store.del("maree-vk"); key = ""; login("That link doesn't work anymore. Ask Marée for a new one."); });
+  const inbox = window.Staff.Inbox(document.getElementById("inbox"), { role: "vendor", auth: { vendorKey: key }, live, lang: me.lang, title: "Requests" });
+  inbox.start();
+  document.getElementById("vl").onchange = async (e) => {
+    try { const r = await api("/api/vendor/me", { method: "PATCH", body: { lang: e.target.value }, auth: { vendorKey: key } }); inbox.setLang(r.me.lang); toast("New guest messages will be translated into " + NAMES[r.me.lang].lang_name); } catch { toast("Couldn't save that."); }
+  };
+  document.getElementById("al").onclick = async (e) => { if (await inbox.enableAlerts()) { e.target.textContent = "Alerts on"; e.target.disabled = true; } };
+  document.getElementById("so").onclick = () => { store.del("maree-vk"); location.href = "/vendor"; };
+}
+boot();
+})();
+</script>
+</body>
+</html>

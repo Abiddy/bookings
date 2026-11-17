@@ -1,14 +1,18 @@
 {
   "name": "maree-bookings",
-  "version": "1.0.0",
-  "description": "Marée: guest experiences booking app for Marina del Rey, with a commission dashboard for the operator.",
+  "version": "2.0.0",
+  "description": "Marée: guests request quotes for things to do around Marina del Rey and chat live with local companies. Commission is tracked on every booking.",
   "main": "server.js",
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "dev": "PARTNER_PASSWORD=dev node server.js"
+    "dev": "ADMIN_PASSWORD=dev node server.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": "22.x"
+  },
+  "dependencies": {
+    "better-sqlite3": "11.7.0",
+    "ws": "8.18.0"
   }
 }
