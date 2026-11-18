@@ -15,14 +15,31 @@ const { WebSocketServer } = require("ws");
 const { CATS, OPTIONS, FIELDS } = require("./public/catalog.js");
 const S = require("./lib/store");
 const svc = require("./lib/services");
+const T = require("./lib/tickets");
 
 const PORT = Number(process.env.PORT) || 3000;
 const PUBLIC_DIR = path.join(__dirname, "public");
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.PARTNER_PASSWORD || "";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
+// In-app messaging (guest chat + partner inbox) is kept in the code but switched off unless MESSAGING=on.
+const MESSAGING = process.env.MESSAGING === "on";
 const BASE_URL = (process.env.PUBLIC_URL || (process.env.RAILWAY_PUBLIC_DOMAIN ? "https://" + process.env.RAILWAY_PUBLIC_DOMAIN : "")).replace(/\/$/, "");
 
 const optById = Object.fromEntries(OPTIONS.map((o) => [o.id, o]));
+// Other sites (e.g. the Paradise Worldwide e-bike site) can embed the quote form and post tickets here.
+const CORS_ORIGINS = (process.env.ALLOWED_ORIGINS || "*").split(",").map((x) => x.trim()).filter(Boolean);
+const PUBLIC_API = (p) => p === "/api/tickets" || p === "/api/catalog" || p === "/api/catalog/full" || /^\/api\/options\/[a-z0-9-]+\/vendors$/.test(p);
+function cors(req, res) {
+  const origin = req.headers.origin;
+  if (!origin) return;
+  const ok = CORS_ORIGINS.includes("*") || CORS_ORIGINS.includes(origin);
+  if (!ok) return;
+  res.setHeader("Access-Control-Allow-Origin", CORS_ORIGINS.includes("*") ? "*" : origin);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Max-Age", "86400");
+}
 const catById = Object.fromEntries(CATS.map((c) => [c.id, c]));
 const LANG_CODES = Object.keys(svc.LANGS);
 
@@ -294,22 +311,25 @@ function summary() {
   const commission = gross * st.commission / 100, hotel = commission * st.hotelShare / 100;
   return {
     settings: st,
-    counts: { requests: all.length, open: all.filter((t) => !["booked", "closed"].includes(t.status)).length, waiting: all.filter((t) => t.status === "new").length, booked: booked.length, unassigned: all.filter((t) => !t.vendor_id).length },
+    counts: { requests: all.length, open: all.filter((t) => !["booked", "closed", "lost"].includes(t.status)).length, waiting: all.filter((t) => t.status === "new").length, booked: booked.length, unassigned: all.filter((t) => !t.vendor_id).length },
     replyRate: all.length ? replied.length / all.length : 0, medianReplyMinutes: median,
     conversion: all.length ? booked.length / all.length : 0,
     money: { gross, commission, hotel, net: commission - hotel },
     byVendor: Object.values(byVendor).map((x) => ({ ...x, commission: x.gross * st.commission / 100 })),
-    services: { translation: svc.hasAI, email: svc.hasMail }
+    services: { translation: svc.hasAI, email: svc.hasMail, messaging: MESSAGING }
   };
 }
-const vendorAdminView = (v) => ({ ...v, link: (BASE_URL || "") + "/vendor?k=" + v.key });
+const vendorAdminView = (v) => ({ ...v, link: MESSAGING ? (BASE_URL || "") + "/vendor?k=" + v.key : null });
+const baseOf = (req) => BASE_URL || ((req.headers["x-forwarded-proto"] || "http") + "://" + req.headers.host);
 
 /* ---------- static ---------- */
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".json": "application/json", ".webmanifest": "application/manifest+json" };
-const PAGES = { "/": "index.html", "/vendor": "vendor.html", "/admin": "admin.html" };
+const PAGES = { "/": "index.html", "/admin": "admin.html", "/outcome": "outcome.html", ...(MESSAGING ? { "/vendor": "vendor.html", "/chat": "chat.html" } : {}) };
+const HIDDEN = MESSAGING ? [] : ["/vendor.html", "/chat.html"];
 const CSP = "default-src 'self'; img-src 'self' data: https://images.unsplash.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'";
 function serveStatic(req, res, pathname) {
   let rel = PAGES[pathname] ? "/" + PAGES[pathname] : decodeURIComponent(pathname);
+  if (HIDDEN.includes(rel) || (!MESSAGING && (pathname === "/vendor" || pathname === "/chat"))) rel = "/index.html";
   if (!path.extname(rel)) rel = "/index.html";
   const file = path.normalize(path.join(PUBLIC_DIR, rel));
   if (!file.startsWith(PUBLIC_DIR + path.sep)) { res.writeHead(403); res.end(); return; }
@@ -327,7 +347,26 @@ async function api(req, res, url) {
   const p = url.pathname, method = req.method, actor = actorOf(req);
   let m;
   if (p === "/api/health") return send(res, 200, { ok: true });
-  if (p === "/api/config") return send(res, 200, { translation: svc.hasAI, langs: svc.LANGS });
+  if (p === "/api/config") return send(res, 200, { translation: svc.hasAI, email: svc.hasMail, messaging: MESSAGING, langs: svc.LANGS });
+
+  /* ---------- quote tickets (email to the company, no in-app chat) ---------- */
+  if ((m = /^\/api\/options\/([a-z0-9-]+)\/vendors$/.exec(p)) && method === "GET") {
+    return send(res, 200, { vendors: T.vendorsFor(m[1]).map((v) => ({ id: v.id, name: v.name })) });
+  }
+  if (p === "/api/tickets" && method === "POST") {
+    if (limited("tix:" + ipOf(req), 20, 60 * 60 * 1000)) throw fail(429, "Too many requests from this device. Please try again later.");
+    const t = T.create(await readBody(req));
+    const r = await T.dispatch(t, baseOf(req));
+    const v = t.vendor_id ? S.vendors.byId(t.vendor_id) : null;
+    return send(res, 201, { code: t.code, vendor: v ? v.name : null, contactPref: t.contact_pref, emailed: !!r.ok, guestCopy: !!(r.ok && t.guest_email) });
+  }
+  if (p === "/api/outcome") {
+    if (limited("out:" + ipOf(req), 120, 15 * 60 * 1000)) throw fail(429, "Too many attempts. Wait a few minutes.");
+    if (method === "GET") return send(res, 200, { ticket: T.publicView(T.byLink(url.searchParams.get("c"), url.searchParams.get("k"))) });
+    if (method === "POST") { const b = await readBody(req); const t = T.byLink(b.c, b.k); return send(res, 200, { ticket: T.publicView(T.setOutcome(t, b.result, b.amount, "partner")) }); }
+  }
+  if (!MESSAGING && (p.startsWith("/api/threads") || p === "/api/inquiries" || p === "/api/vendor/me") && !(actor && actor.role === "admin")) throw fail(404, "Not found.");
+  if (p === "/api/catalog/full" && method === "GET") return send(res, 200, { cats: CATS, options: OPTIONS, fields: FIELDS });
   if (p === "/api/catalog" && method === "GET") {
     const lang = str(url.searchParams.get("lang"), 5);
     return send(res, 200, { lang, strings: (await catalogFor(lang)) || null });
@@ -380,6 +419,20 @@ async function api(req, res, url) {
     if (!ADMIN_PASSWORD) throw fail(401, "Set ADMIN_PASSWORD on the server to open the admin desk.");
     need(actor, "admin");
     if (p === "/api/admin/summary") return send(res, 200, summary());
+    if (p === "/api/admin/tickets" && method === "GET") return send(res, 200, { tickets: S.threads.all().map(T.adminView) });
+    if ((m = /^\/api\/admin\/tickets\/(\d+)(\/resend)?$/.exec(p)) && method === "POST") {
+      let t = S.threads.byId(Number(m[1])); if (!t) throw fail(404, "Ticket not found.");
+      if (m[2]) { const r = await T.dispatch(t, baseOf(req)); return send(res, r.ok ? 200 : 400, r.ok ? { ticket: T.adminView(S.threads.byId(t.id)) } : { error: r.reason }); }
+      const b = await readBody(req);
+      if (b.vendorId !== undefined) {
+        const vid = b.vendorId ? Number(b.vendorId) : null;
+        if (vid && !S.vendors.byId(vid)) throw fail(400, "Partner not found.");
+        t = S.threads.set(t.id, { vendor_id: vid });
+        if (b.send) { const r = await T.dispatch(t, baseOf(req)); if (!r.ok) return send(res, 400, { error: r.reason }); }
+      }
+      if (b.status) t = T.setOutcome(S.threads.byId(t.id), b.status, b.amount, "admin");
+      return send(res, 200, { ticket: T.adminView(S.threads.byId(t.id)) });
+    }
     if (p === "/api/admin/settings" && method === "PUT") {
       const b = await readBody(req), patch = {};
       if (b.commission !== undefined) { const n = Number(b.commission); if (n >= 0 && n <= 60) patch.commission = Math.round(n); }
@@ -412,6 +465,7 @@ async function api(req, res, url) {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
   try {
+    if (PUBLIC_API(url.pathname)) { cors(req, res); if (req.method === "OPTIONS") { res.writeHead(204); res.end(); return; } }
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     if (req.method !== "GET" && req.method !== "HEAD") { res.writeHead(405); res.end(); return; }
     serveStatic(req, res, url.pathname);
@@ -423,6 +477,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 /* ---------- WebSockets: live updates, typing, presence ---------- */
+if (MESSAGING) {
 const wss = new WebSocketServer({ server, path: "/ws", maxPayload: 16 * 1024 });
 wss.on("connection", (ws, req) => {
   ws.isAlive = true; ws.actor = null; ws.viewing = null;
@@ -454,9 +509,11 @@ const beat = setInterval(() => {
   for (const ws of sockets) { if (!ws.isAlive) { ws.terminate(); sockets.delete(ws); continue; } ws.isAlive = false; try { ws.ping(); } catch {} }
 }, 25000);
 wss.on("close", () => clearInterval(beat));
+}
 
 server.listen(PORT, () => {
   console.log(`Marée running on port ${PORT}`);
+  console.log(`Messaging: ${MESSAGING ? "on" : "off (quote tickets by email)"}`);
   console.log(`Translation: ${svc.hasAI ? "on" : "off (set ANTHROPIC_API_KEY)"} · Email: ${svc.hasMail ? "on" : "off (set RESEND_API_KEY and EMAIL_FROM)"}`);
   if (!ADMIN_PASSWORD) console.warn("ADMIN_PASSWORD is not set: the admin desk will stay locked.");
 });

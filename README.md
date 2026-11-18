@@ -1,5 +1,9 @@
 # Marée · Marina del Rey guest experiences
 
+> **Current mode: quote tickets by email.** Guests answer a step-by-step quote form; the matching company gets an email ticket (Reply goes to the guest) with one-click **Booked / Contacted / Didn't book** links that track commission. In-app messaging is still in the code but off. Set `MESSAGING=on` to bring back the chat, partner inbox (`/vendor`) and old guest app (`/chat`).
+>
+> Other sites can embed the form: `GET /api/catalog/full`, `GET /api/options/:id/vendors`, `POST /api/tickets` allow cross-origin requests (limit with `ALLOWED_ORIGINS=https://site1,https://site2`). The Paradise Worldwide e-bike site uses this at `/activities`.
+
 Guests pick what they want (boats, tours, beach and water, car rental, catering, celebrations), fill in a short quote request, and chat live with the local company that handles it. No payment happens in the app: the company sends a quote in the chat, the guest accepts, and the company marks the request as booked. Marée tracks every booking so commission can be invoiced.
 
 Three apps, one server:

@@ -4,140 +4,91 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
-<title>Marée Marina del Rey</title>
-<meta name="description" content="Boats, tours, car rental, catering and more around Marina del Rey. Ask for a quote and chat with local companies.">
+<title>Marée Quotes</title>
+<meta name="description" content="Get a quote for equipment rentals, boats, tours, cars, catering and more around Marina del Rey. A local company calls or emails you back.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/shared.css">
 <style>
-.app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--bg);position:relative;padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
-.app.full{padding-bottom:0;height:100vh;height:100dvh;display:flex;flex-direction:column}
-@media (min-width:700px){ .app{margin-top:24px;margin-bottom:24px;border-radius:32px;min-height:calc(100dvh - 48px);overflow:hidden;box-shadow:0 30px 60px -40px rgba(0,0,0,.35)} .app.full{height:calc(100dvh - 48px)} }
-.top{padding-top:calc(20px + env(safe-area-inset-top,0px));display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.hello h1{font-size:26px}
-.hello p{color:var(--muted);font-size:14.5px;margin-top:2px}
-.top-acts{display:flex;gap:8px}
-.langbtn{height:44px;border-radius:999px;border:1px solid var(--line);background:var(--bg);display:inline-flex;align-items:center;gap:6px;padding:0 12px;font-weight:700;font-size:13px}
-.langbtn svg{width:18px;height:18px}
-.searchbar{margin-top:18px;display:flex;align-items:center;gap:10px;height:54px;border:1px solid var(--line);border-radius:999px;padding:0 18px;background:var(--bg)}
-.searchbar:focus-within{border-color:var(--ink)}
-.searchbar input{flex:1;min-width:0;border:0;outline:none;background:transparent;font-size:16px}
-.searchbar svg{width:20px;height:20px;flex:none}
-.sec{margin-top:26px}
-.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
-.sec-h h2{font-size:18px}
-.cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.cat{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:1/1.05;display:block;max-width:100%}
-.cat::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.62),rgba(0,0,0,0) 58%)}
-.cat .lbl{position:absolute;left:14px;right:14px;bottom:12px;z-index:1;color:#fff}
-.cat .lbl b{display:block;font-size:17px;line-height:1.2;letter-spacing:-.01em}
-.cat .lbl small{font-size:12.5px;opacity:.9}
-.hscroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-right:calc(-1 * max(20px,env(safe-area-inset-right,0px)));padding-right:20px}
-.hscroll::-webkit-scrollbar{display:none}
-.ocard{flex:none;width:240px;scroll-snap-align:start;display:flex;flex-direction:column;gap:8px}
-.ocard.full{width:auto}
-.ocard .ph{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/3;max-width:100%}
-.ocard h3{font-size:16px;line-height:1.25}
-.ocard .meta{font-size:13px;color:var(--muted)}
-.ocard .row2{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.ocard .price{font-weight:700;font-size:14px;white-space:nowrap}
-.vlist{display:flex;flex-direction:column;gap:24px}
-.steps3{display:grid;gap:10px}
-.steps3 div{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:12px 14px;font-weight:600;font-size:14.5px}
-.steps3 span{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;flex:none}
-
-/* nav */
-.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20}
-.nav .bar{display:flex;align-items:center;gap:2px;background:var(--ink);border-radius:999px;padding:6px}
-.nav a{position:relative;height:48px;min-width:48px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;padding:0 16px;font-weight:700;font-size:14.5px}
-.nav a svg{width:21px;height:21px}
-.nav a[aria-current="page"]{background:#fff;color:var(--ink)}
-.nav .badge{border-color:var(--ink);top:2px;right:4px}
-
-/* welcome */
-.welcome{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
-@media (min-width:700px){.welcome{min-height:calc(100dvh - 48px)}}
-.w-top{width:100%;display:flex;justify-content:space-between;align-items:center}
-.wordmark{font-weight:700;letter-spacing:.06em;font-size:18px;display:flex;align-items:flex-start;gap:2px}
-.wordmark i{width:7px;height:7px;border:1.5px solid var(--ink);border-radius:50%;margin-top:1px}
-.orbit-wrap{position:relative;width:min(330px,84vw);aspect-ratio:1;margin:26px 0 22px}
-.halo{position:absolute;inset:26%;border-radius:50%;background:radial-gradient(circle,#fff 55%,#F3F3F4 56%,#fff 72%);box-shadow:0 0 0 1px #F0F0F1}
-.orb{position:absolute;border-radius:14px;overflow:hidden;box-shadow:0 10px 22px -10px rgba(0,0,0,.4);animation:drift 10s ease-in-out infinite alternate}
-.center{position:absolute;left:50%;top:50%;width:34%;aspect-ratio:1;border-radius:26px;overflow:hidden;box-shadow:0 16px 36px -14px rgba(0,0,0,.4);animation:breathe 12s ease-in-out infinite alternate}
-@keyframes drift{0%{transform:translate3d(0,0,0) rotate(-1.5deg)}50%{transform:translate3d(3px,-7px,0) rotate(.5deg)}100%{transform:translate3d(-3px,4px,0) rotate(1.5deg)}}
-@keyframes breathe{from{transform:translate(-50%,-50%) scale(1)}to{transform:translate(-50%,-52%) scale(1.02)}}
-.welcome .kicker{color:var(--faint);font-size:14px;text-align:center}
-.welcome h1{font-size:clamp(28px,7.6vw,34px);font-weight:500;text-align:center;line-height:1.18;margin-top:10px;max-width:16ch;letter-spacing:-.025em}
-.welcome .cta{margin-top:auto;width:100%;padding-top:30px}
-
-/* listing */
-.bar-h{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding-top:calc(14px + env(safe-area-inset-top,0px));gap:8px}
-.bar-h h1{font-size:17px;text-align:center}
-.hero{position:relative;height:340px;overflow:hidden}
-.hero .hb{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;z-index:2}
-.hero .hb svg{width:20px;height:20px}
-.dsheet{position:relative;margin-top:-26px;background:var(--bg);border-radius:26px 26px 0 0;padding-top:22px;padding-bottom:120px}
-.dtitle h1{font-size:24px;line-height:1.2}
-.from{font-size:15px;color:var(--muted);margin-top:4px}
-.from b{color:var(--ink);font-size:18px}
-.gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
-.gal button{aspect-ratio:1;border-radius:14px;overflow:hidden;border:0;padding:0;position:relative}
-.gal button[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
-.h3{font-size:16px;margin-top:22px;margin-bottom:10px}
-.facts{display:flex;flex-wrap:wrap;gap:8px}
-.facts span{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink-2)}
-.desc{font-size:15px;color:var(--ink-2);line-height:1.6;margin-top:12px}
-.bookbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;background:var(--bg);border-top:1px solid var(--line);z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
-@media (min-width:700px){.bookbar{bottom:24px;border-radius:0 0 32px 32px}}
-.bookbar small{display:block;color:var(--muted);font-size:12.5px}
-
-/* quote form */
-.progress{height:4px;background:var(--soft-2);border-radius:2px;overflow:hidden;margin-top:14px}
-.progress i{display:block;height:100%;background:var(--ink);border-radius:2px;transition:width .3s}
-.qhead{margin-top:18px}
-.qhead .note{font-weight:600}
-.qhead h2{font-size:24px;margin-top:4px}
-.qopt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:10px;margin-top:14px}
-.qopt .th{width:54px;height:54px;border-radius:12px;overflow:hidden;position:relative;flex:none}
-.qopt b{font-size:15px}
-.qform{display:flex;flex-direction:column;gap:20px;margin-top:20px;padding-bottom:30px}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.stepper{height:52px;border:1px solid var(--line);border-radius:999px;display:flex;align-items:center;justify-content:space-between;padding:0 6px;max-width:220px}
-.stepper button{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft);font-size:20px;display:grid;place-items:center}
-.stepper b{font-size:16px}
+/* Layout: one centered column, one question per screen, large tappable answers — the insurance-quote pattern. */
+body{background:var(--bg)}
+.wrap{max-width:600px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
+.top{display:flex;justify-content:space-between;align-items:center;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:6px}
+.wordmark{font-weight:800;letter-spacing:.06em;font-size:16px;display:flex;align-items:flex-start;gap:2px}
+.wordmark i{width:6px;height:6px;border:1.5px solid var(--ink);border-radius:50%;margin-top:1px}
+.langbtn{height:40px;border-radius:999px;border:1px solid var(--line);background:var(--bg);display:inline-flex;align-items:center;gap:6px;padding:0 12px;font-weight:700;font-size:13px}
+.langbtn svg{width:17px;height:17px}
+.progress{height:4px;background:var(--soft-2);border-radius:2px;overflow:hidden;margin-top:12px}
+.progress i{display:block;height:100%;background:var(--ink);border-radius:2px;transition:width .35s ease}
+.back{display:inline-flex;align-items:center;gap:6px;border:0;background:none;padding:0;height:44px;font-weight:700;font-size:14px;color:var(--muted);margin-top:8px}
+.back svg{width:18px;height:18px}
+.back[hidden]{display:none}
+.intro{padding-top:18px}
+.intro h1{font-size:clamp(28px,6.5vw,38px);line-height:1.12;letter-spacing:-.03em;max-width:18ch}
+.intro p{color:var(--muted);font-size:16px;margin-top:10px;max-width:46ch}
+.trust{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.trust span{display:inline-flex;align-items:center;gap:6px}
+.trust svg{width:16px;height:16px;color:var(--ok)}
+.q{padding-top:22px;display:flex;flex-direction:column;gap:16px;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.q h2{font-size:clamp(22px,5vw,28px);letter-spacing:-.025em;line-height:1.2}
+.q .sub{color:var(--muted);font-size:14.5px;margin-top:-8px}
+.answers{display:flex;flex-direction:column;gap:10px}
+.ans{display:flex;align-items:center;gap:14px;min-height:64px;width:100%;text-align:left;border:1.5px solid var(--line);border-radius:18px;background:var(--bg);padding:10px 16px 10px 10px;transition:border-color .15s,background .15s}
+.ans:hover{border-color:#BDBDC2}
+.ans[aria-pressed="true"]{border-color:var(--ink);background:var(--soft)}
+.ans.plain{padding-left:18px}
+.ans .th{width:52px;height:52px;border-radius:12px;overflow:hidden;position:relative;flex:none}
+.ans .tx{flex:1;min-width:0}
+.ans .tx b{display:block;font-size:16px;line-height:1.25}
+.ans .tx small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.ans .radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.ans[aria-pressed="true"] .radio{border-color:var(--ink)}
+.ans[aria-pressed="true"] .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--ink)}
+.ans .chev{width:18px;height:18px;flex:none;color:var(--faint)}
+.grid2a{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stepper{height:64px;border:1.5px solid var(--line);border-radius:18px;display:flex;align-items:center;justify-content:space-between;padding:0 8px;max-width:260px}
+.stepper button{width:48px;height:48px;border-radius:50%;border:0;background:var(--soft);font-size:22px;display:grid;place-items:center}
+.stepper b{font-size:22px}
 .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.qfoot{display:flex;gap:10px;padding-top:6px}
-.qfoot .btn{flex:1}
-
-/* messages list */
-.tlist{display:flex;flex-direction:column;gap:10px;margin-top:18px}
-.titem{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:22px;padding:10px;position:relative}
-.titem .th{width:64px;height:64px;border-radius:16px;overflow:hidden;position:relative;flex:none}
-.titem .tx{flex:1;min-width:0}
-.titem .tx b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.titem .tx .last{font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.titem .tx .last.unread{color:var(--ink);font-weight:700}
-.titem .side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-size:12px;color:var(--muted)}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--heart)}
-.empty{padding:36px 20px;text-align:center;border:1px dashed var(--line);border-radius:22px;color:var(--muted);margin-top:18px}
-
-/* sheet */
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.seg button{height:50px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);font-weight:700}
+.seg button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.actions{display:flex;gap:10px;align-items:center;margin-top:6px}
+.actions .btn{flex:1;height:56px;font-size:16px}
+.linkbtn{border:0;background:none;padding:0 6px;height:44px;font-weight:700;color:var(--muted);font-size:14.5px;text-decoration:underline}
+.review{display:flex;flex-direction:column;border:1.5px solid var(--line);border-radius:20px;overflow:hidden}
+.review .rh{display:flex;gap:12px;align-items:center;padding:12px;background:var(--soft)}
+.review .rh .th{width:56px;height:56px;border-radius:12px;overflow:hidden;position:relative;flex:none}
+.review .rh b{font-size:16px}
+.rrow{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:12px 16px;border-top:1px solid var(--line);font-size:14.5px}
+.rrow span{color:var(--muted);flex:none}
+.rrow b{text-align:right;font-weight:600;overflow-wrap:break-word;flex:1;min-width:0}
+.rrow span{max-width:45%}
+.rrow.col{flex-wrap:wrap}
+.rrow.col span{max-width:none;flex:1}
+.rrow.col b{flex-basis:100%;order:3;text-align:left;white-space:pre-wrap;font-weight:500}
+.rrow button{border:0;background:none;padding:0 0 0 8px;font-weight:700;font-size:13px;text-decoration:underline;color:var(--ink-2);flex:none}
+.done{padding-top:40px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;animation:fade .3s ease}
+.seal{width:76px;height:76px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center}
+.seal svg{width:34px;height:34px}
+.done h2{font-size:30px;letter-spacing:-.03em}
+.done p{color:var(--ink-2);font-size:16px;max-width:38ch}
+.refbox{border:1.5px dashed var(--line);border-radius:18px;padding:14px 22px;margin-top:6px}
+.refbox small{display:block;color:var(--muted);font-size:12.5px;font-weight:600}
+.refbox b{font-size:26px;letter-spacing:.14em}
+.foot{margin-top:auto;padding-top:34px;font-size:12.5px;color:var(--faint);text-align:center}
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:40;display:flex;align-items:flex-end;justify-content:center}
-.sheet{width:100%;max-width:480px;max-height:90vh;overflow-y:auto;background:var(--bg);border-radius:28px 28px 0 0;padding-top:10px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));animation:up .25s cubic-bezier(.2,.8,.2,1)}
-@keyframes up{from{transform:translateY(40px);opacity:.4}}
+.sheet{width:100%;max-width:480px;max-height:90vh;overflow-y:auto;background:var(--bg);border-radius:28px 28px 0 0;padding-top:10px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
 .grab{width:42px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
 .langlist{display:flex;flex-direction:column;gap:8px;margin-top:14px}
-.langlist button{height:54px;border-radius:16px;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-weight:700;font-size:15.5px}
-.langlist button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
-.chatwrap{flex:1;min-height:0}
-.chat-h .bk{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:none}
-.chat-h .bk svg{width:18px;height:18px}
-.chat-h{padding-top:calc(12px + env(safe-area-inset-top,0px))}
+@media (max-width:420px){.grid2a{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.q,.done{animation:none}}
 </style>
 </head>
 <body>
-<div class="app" id="app"></div>
+<div class="wrap pad" id="app"></div>
 <div id="layer"></div>
 <script src="/i18n.js"></script>
 <script src="/catalog.js"></script>
@@ -145,330 +96,217 @@
 <script>
 (() => {
 "use strict";
-const { CATS, OPTIONS, FIELDS, WELCOME } = window.MAREE_CATALOG;
-const { esc, money, store, img, toast, api, Live, connBanner, Chat, makeT } = window.M;
-const LANGS = window.MAREE_I18N.LANGS;
+const { CATS, OPTIONS, FIELDS } = window.MAREE_CATALOG;
+const { esc, money, store, img, api, toast, makeT } = window.M;
+const LANGS = window.MAREE_I18N.LANGS, NAMES = window.MAREE_I18N.I18N;
 const app = document.getElementById("app"), layer = document.getElementById("layer");
-const optById = Object.fromEntries(OPTIONS.map((o) => [o.id, o]));
-const catById = Object.fromEntries(CATS.map((c) => [c.id, c]));
-
+const optById = Object.fromEntries(OPTIONS.map((o) => [o.id, o])), catById = Object.fromEntries(CATS.map((c) => [c.id, c]));
 const I = {
   globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>',
-  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>',
-  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V20h-5v-6H9v6H4z"/></svg>',
-  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
   back: window.M.ICON.back,
-  check: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+  chev: '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
 };
 
-/* ---------- state ---------- */
-const params = new URLSearchParams(location.search);
-if (params.get("g")) { store.set("maree-gt", params.get("g")); store.set("maree-welcomed", true); history.replaceState(null, "", location.pathname + location.hash); }
+/* ---------- state (kept for this tab, so a refresh doesn't lose answers) ---------- */
 const guessLang = () => { const n = (navigator.language || "en").slice(0, 2); return LANGS.includes(n) ? n : "en"; };
-const S = {
-  lang: store.get("maree-lang", guessLang()),
-  token: store.get("maree-gt", ""),
-  threads: [], cat: null, q: "", gal: 0,
-  form: null, contact: store.get("maree-contact", { name: "", email: "", phone: "" }),
-  live: null, chat: null
-};
-let t = makeT(S.lang);
-document.documentElement.lang = S.lang;
-let CTR = null; // translated catalog strings
-const tx = (o, k, i) => (CTR && CTR[o.id + "." + k + (i !== undefined ? "." + i : "")]) || (i !== undefined ? o[k][i] : o[k]);
+const saved = (() => { try { return JSON.parse(sessionStorage.getItem("maree-q") || "null"); } catch { return null; } })();
+const blank = () => ({ cat: null, optionId: null, vendorId: "", fields: {}, notes: "", ...store.get("maree-contact", { name: "", email: "", phone: "" }), contactPref: "call", step: 0, done: null });
+const Q = saved && !saved.done ? saved : blank();
+let lang = store.get("maree-lang", guessLang()), t = makeT(lang), CTR = null, vendors = [], err = "";
+document.documentElement.lang = lang;
+const persist = () => { try { sessionStorage.setItem("maree-q", JSON.stringify(Q)); } catch {} };
+const tx = (o, k) => (CTR && CTR[o.id + "." + k]) || o[k];
 async function loadCatalogLang() {
-  CTR = null;
-  if (S.lang === "en") return;
-  const want = S.lang;
-  try { const r = await api("/api/catalog?lang=" + want); if (S.lang === want && r.strings) { CTR = r.strings; route(true); } } catch {}
+  CTR = null; if (lang === "en") return;
+  const want = lang;
+  try { const r = await api("/api/catalog?lang=" + want); if (lang === want && r.strings) { CTR = r.strings; render(); } } catch {}
 }
-const unitText = (o) => t("unit_" + o.unit);
-const fromText = (o) => t("from", { price: money(o.from) });
-
-function startLive() {
-  if (S.live || !S.token) return;
-  S.live = new Live({ guestToken: S.token });
-  connBanner(S.live, t);
-  S.live.on("thread", (ev) => {
-    const i = S.threads.findIndex((x) => x.id === ev.thread.id);
-    if (i >= 0) S.threads[i] = ev.thread; else S.threads.unshift(ev.thread);
-    if (current === "messages") viewMessages(); else updateBadge();
-  });
-  S.live.on("ready", loadThreads);
-}
-async function loadThreads() {
-  if (!S.token) return;
-  try { const r = await api("/api/threads", { auth: { guestToken: S.token } }); S.threads = r.threads; if (current === "messages") viewMessages(); else updateBadge(); } catch {}
-}
-const unreadTotal = () => S.threads.reduce((s, x) => s + (x.unread || 0), 0);
-function updateBadge() { const b = document.querySelector("[data-badge]"); if (b) { const n = unreadTotal(); b.hidden = !n; b.textContent = n; } }
-
-/* ---------- shared bits ---------- */
-function nav(active) {
-  const n = unreadTotal();
-  return `<nav class="nav" aria-label="Main"><div class="bar">
-    <a href="#home" ${active === "home" ? 'aria-current="page"' : ""}>${I.home}<span>${esc(t("home"))}</span></a>
-    <a href="#messages" ${active === "messages" ? 'aria-current="page"' : ""}>${I.chat}<span>${esc(t("messages"))}</span><span class="badge" data-badge ${n ? "" : "hidden"}>${n}</span></a>
-  </div></nav>`;
-}
-const langBtn = () => `<button class="langbtn" type="button" data-lang-open aria-label="${esc(t("language"))}">${I.globe}<span>${S.lang.toUpperCase()}</span></button>`;
-function ocard(o, full) {
-  return `<a class="ocard${full ? " full" : ""}" href="#opt-${o.id}">
-    <div class="ph ph-fallback">${img(o.photos[0].src, full ? 760 : 520)}</div>
-    <div class="row2"><h3>${esc(tx(o, "title"))}</h3></div>
-    <div class="meta"><span class="price">${esc(fromText(o))}</span> · ${esc(unitText(o))}</div></a>`;
-}
-function langSheet() {
-  layer.innerHTML = `<div class="scrim" data-close><div class="sheet pad" role="dialog" aria-modal="true" aria-labelledby="lg-t">
-    <div class="grab"></div><h2 id="lg-t" style="font-size:19px">${esc(t("language"))}</h2>
-    <div class="langlist">${LANGS.map((l) => `<button type="button" data-lang="${l}" aria-pressed="${l === S.lang}"><span>${esc(window.MAREE_I18N.I18N[l].lang_name)}</span>${l === S.lang ? I.check : ""}</button>`).join("")}</div>
-  </div></div>`;
-}
-function setLang(l) {
-  S.lang = l; store.set("maree-lang", l); t = makeT(l); document.documentElement.lang = l;
-  layer.innerHTML = ""; route(true); loadCatalogLang();
-  if (S.form) S.form.lang = l;
+async function loadVendors() {
+  vendors = [];
+  if (!Q.optionId) return;
+  const want = Q.optionId;
+  try { const r = await api(`/api/options/${want}/vendors`); if (Q.optionId === want) { vendors = r.vendors; if (!vendors.some((v) => String(v.id) === String(Q.vendorId))) Q.vendorId = ""; } } catch {}
 }
 
-/* ---------- views ---------- */
-function viewWelcome() {
-  app.className = "app";
-  const sizes = [56, 48, 62, 44, 54, 60, 46, 58, 42, 52, 50];
-  const orbs = WELCOME.orbit.map((p, i) => {
-    const a = (i / WELCOME.orbit.length) * Math.PI * 2 - Math.PI / 2, r = 40 + (i % 2 ? 4 : 0), s = sizes[i] / 330 * 100;
-    return `<div class="orb ph-fallback" style="width:${s}%;height:${s}%;left:${50 + r * Math.cos(a) - s / 2}%;top:${50 + r * Math.sin(a) - s / 2}%;animation-delay:-${(i * 1.7).toFixed(1)}s;animation-duration:${9 + (i % 4) * 1.6}s">${img(p.src, 180)}</div>`;
-  }).join("");
-  app.innerHTML = `<div class="welcome pad">
-    <div class="w-top"><span style="width:60px"></span><div class="wordmark">MARÉE<i></i></div>${langBtn()}</div>
-    <div class="orbit-wrap"><div class="halo"></div>${orbs}<div class="center ph-fallback">${img(WELCOME.center.src, 420, "Marina del Rey harbor")}</div></div>
-    <p class="kicker">${esc(t("welcome_kicker"))}</p>
-    <h1>${esc(t("welcome_title"))}</h1>
-    <div class="cta"><a class="btn btn-ink block" href="#home" data-welcomed>${esc(t("welcome_cta"))}</a></div>
-  </div>`;
+/* ---------- the question list for the current answers ---------- */
+function steps() {
+  const s = ["cat", "option"];
+  if (Q.optionId && vendors.length > 1) s.push("vendor");
+  if (Q.cat) for (const k of catById[Q.cat].fields) s.push("f:" + k);
+  s.push("notes", "contact", "review");
+  return s;
 }
-
-function viewHome() {
-  app.className = "app";
-  const name = (S.contact.name || "").split(" ")[0];
-  const q = S.q.trim().toLowerCase();
-  const results = q ? OPTIONS.filter((o) => (tx(o, "title") + " " + tx(o, "blurb") + " " + t("cat_" + o.cat) + " " + o.title + " " + o.blurb).toLowerCase().includes(q)) : [];
-  const popular = ["sunset-sail", "convertible", "private-chef", "bike-tour", "private-yacht", "surf-lesson"].map((id) => optById[id]);
-  app.innerHTML = `<div class="pad">
-    <div class="top">
-      <div class="hello"><h1>${esc(name ? t("hey_name", { name }) : t("hey"))}</h1><p>${esc(t("home_sub"))}</p></div>
-      <div class="top-acts">${langBtn()}</div>
-    </div>
-    <label class="searchbar">${I.search}<span class="sr">${esc(t("search"))}</span><input id="q" type="search" value="${esc(S.q)}" placeholder="${esc(t("search"))}" autocomplete="off"></label>
-    ${q ? `<section class="sec"><div class="vlist">${results.map((o) => ocard(o, true)).join("") || `<div class="empty">—</div>`}</div></section>` : `
-    <section class="sec" aria-labelledby="cats-h">
-      <div class="sec-h"><h2 id="cats-h">${esc(t("all_categories"))}</h2></div>
-      <div class="cats">${CATS.map((c) => `<a class="cat ph-fallback" href="#cat-${c.id}">${img(c.photo.src, 420)}<span class="lbl"><b>${esc(t("cat_" + c.id))}</b><small>${esc(t("options_n", { n: OPTIONS.filter((o) => o.cat === c.id).length }))}</small></span></a>`).join("")}</div>
-    </section>
-    <section class="sec" aria-labelledby="pop-h">
-      <div class="sec-h"><h2 id="pop-h">${esc(t("popular"))}</h2></div>
-      <div class="hscroll">${popular.map((o) => ocard(o)).join("")}</div>
-    </section>
-    <section class="sec" aria-labelledby="hiw-h">
-      <div class="sec-h"><h2 id="hiw-h">${esc(t("how_it_works"))}</h2></div>
-      <div class="steps3"><div><span>1</span>${esc(t("hiw_1"))}</div><div><span>2</span>${esc(t("hiw_2"))}</div><div><span>3</span>${esc(t("hiw_3"))}</div></div>
-    </section>`}
-  </div>${nav("home")}`;
-  const qi = document.getElementById("q");
-  qi.oninput = () => { S.q = qi.value; const pos = qi.selectionStart; viewHome(); const n = document.getElementById("q"); n.focus(); n.setSelectionRange(pos, pos); };
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const fmtDate = (s) => { try { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString(lang, { weekday: "short", month: "short", day: "numeric" }); } catch { return s; } };
+function valueText(k, v) {
+  if (v === undefined || v === null || v === "") return "—";
+  if (k === "date") return fmtDate(v);
+  if (k === "dates") return fmtDate(v.from) + (v.to && v.to !== v.from ? " → " + fmtDate(v.to) : "");
+  if (typeof v === "number") return String(v);
+  return t("c_" + v);
 }
+const opTypical = (o) => t("typical_short", { price: t("from", { price: money(o.from) }), unit: t("unit_" + o.unit) });
 
-function viewCat(id) {
-  const c = catById[id]; if (!c) return go("home");
-  app.className = "app";
-  app.innerHTML = `<div class="pad">
-    <div class="bar-h"><a class="iconbtn" href="#home" aria-label="${esc(t("back"))}">${I.back}</a><h1>${esc(t("cat_" + c.id))}</h1><span></span></div>
-    <section class="sec" style="margin-top:18px"><div class="vlist">${OPTIONS.filter((o) => o.cat === c.id).map((o) => ocard(o, true)).join("")}</div></section>
-  </div>${nav("home")}`;
-}
-
-function viewOption(id) {
-  const o = optById[id]; if (!o) return go("home");
-  app.className = "app";
-  if (S.galFor !== id) { S.gal = 0; S.galFor = id; }
-  const p = o.photos[S.gal] || o.photos[0];
-  app.innerHTML = `
-  <div class="hero ph-fallback">${img(p.src, 960, tx(o, "title"))}<a class="hb" href="#cat-${o.cat}" aria-label="${esc(t("back"))}">${I.back}</a></div>
-  <div class="dsheet pad">
-    <p class="note" style="font-weight:700">${esc(t("cat_" + o.cat))}</p>
-    <div class="dtitle"><h1>${esc(tx(o, "title"))}</h1></div>
-    <p class="from">${esc(t("typical"))}: <b class="num">${esc(fromText(o))}</b> ${esc(unitText(o))}</p>
-    <p class="desc">${esc(tx(o, "blurb"))}</p>
-    <h2 class="h3">${esc(t("included"))}</h2>
-    <div class="facts">${o.incl.map((x, i) => `<span>${I.check}${esc(tx(o, "incl", i))}</span>`).join("")}</div>
-    <div class="gal" role="group" aria-label="Photos">${o.photos.map((ph, i) => `<button type="button" class="ph-fallback" data-gal="${i}" aria-pressed="${i === S.gal}" aria-label="Photo ${i + 1}">${img(ph.src, 200)}</button>`).join("")}</div>
-    <p class="note" style="margin-top:8px">${esc(t("photo_by", { by: p.by }))}</p>
-    <h2 class="h3">${esc(t("how_it_works"))}</h2>
-    <div class="steps3"><div><span>1</span>${esc(t("hiw_1"))}</div><div><span>2</span>${esc(t("hiw_2"))}</div><div><span>3</span>${esc(t("hiw_3"))}</div></div>
-  </div>
-  <div class="bookbar pad"><div><b>${esc(t("request_quote"))}</b><small>${esc(t("free_no_payment"))}</small></div><a class="btn btn-ink" href="#ask-${o.id}">${esc(t("request_quote"))}</a></div>`;
-}
-
-/* ---------- quote form (3 steps) ---------- */
-function todayIso() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
-function ensureForm(o) {
-  if (!S.form || S.form.optionId !== o.id) {
-    const fields = {};
-    for (const k of catById[o.cat].fields) { const f = FIELDS[k]; if (f.type === "stepper") fields[k] = f.def; }
-    S.form = { optionId: o.id, step: 1, fields, notes: "", ...S.contact, lang: S.lang, err: "" };
+/* ---------- screens ---------- */
+function screen(id) {
+  if (id === "cat") return `
+    <h2>${esc(t("q_cat"))}</h2>
+    <div class="answers">${CATS.map((c) => `<button type="button" class="ans" data-cat="${c.id}" aria-pressed="${Q.cat === c.id}">
+      <span class="th ph-fallback">${img(c.photo.src, 120)}</span><span class="tx"><b>${esc(t("cat_" + c.id))}</b><small>${esc(t("options_n", { n: OPTIONS.filter((o) => o.cat === c.id).length }))}</small></span>${I.chev}</button>`).join("")}</div>`;
+  if (id === "option") return `
+    <h2>${esc(t("q_option"))}</h2><p class="sub">${esc(t("cat_" + Q.cat))}</p>
+    <div class="answers">${OPTIONS.filter((o) => o.cat === Q.cat).map((o) => `<button type="button" class="ans" data-opt="${o.id}" aria-pressed="${Q.optionId === o.id}">
+      <span class="th ph-fallback">${img(o.photos[0].src, 120)}</span><span class="tx"><b>${esc(tx(o, "title"))}</b><small>${esc(opTypical(o))}</small></span>${I.chev}</button>`).join("")}</div>`;
+  if (id === "vendor") return `
+    <h2>${esc(t("q_vendor"))}</h2>
+    <div class="answers">
+      <button type="button" class="ans plain" data-vendor="" aria-pressed="${!Q.vendorId}"><span class="tx"><b>${esc(t("no_pref"))}</b><small>${esc(t("no_pref_sub"))}</small></span><span class="radio"></span></button>
+      ${vendors.map((v) => `<button type="button" class="ans plain" data-vendor="${v.id}" aria-pressed="${String(Q.vendorId) === String(v.id)}"><span class="tx"><b>${esc(v.name)}</b></span><span class="radio"></span></button>`).join("")}
+    </div>`;
+  if (id.startsWith("f:")) {
+    const k = id.slice(2), f = FIELDS[k], v = Q.fields[k];
+    const title = `<h2>${esc(t("f_" + k))}</h2>`;
+    if (f.type === "date") return `${title}<div class="f"><label class="sr" for="fd">${esc(t("f_" + k))}</label><div class="inp"><input id="fd" type="date" min="${today()}" value="${esc(v || "")}"></div></div>${err ? `<p class="err" role="alert">${esc(err)}</p>` : ""}${actions(true)}`;
+    if (f.type === "daterange") return `${title}<div class="two">
+        <div class="f"><label for="fr">${esc(t("f_from"))}</label><div class="inp"><input id="fr" type="date" min="${today()}" value="${esc(v ? v.from : "")}"></div></div>
+        <div class="f"><label for="ft">${esc(t("f_to"))}</label><div class="inp"><input id="ft" type="date" min="${today()}" value="${esc(v ? v.to : "")}"></div></div></div>${err ? `<p class="err" role="alert">${esc(err)}</p>` : ""}${actions(true)}`;
+    if (f.type === "stepper") return `${title}<div class="stepper" role="group" aria-label="${esc(t("f_" + k))}"><button type="button" data-step="-1" aria-label="−">−</button><b class="num" aria-live="polite">${v ?? f.def}</b><button type="button" data-step="1" aria-label="+">+</button></div>${actions(true)}`;
+    if (f.type === "chips") return `${title}<div class="answers ${f.choices.length > 4 ? "grid2a" : ""}">${f.choices.map((c) => `<button type="button" class="ans plain" data-chip="${c}" aria-pressed="${v === c}"><span class="tx"><b>${esc(t("c_" + c))}</b></span><span class="radio"></span></button>`).join("")}</div>
+      <div class="actions" style="justify-content:flex-start"><button type="button" class="linkbtn" data-next>${esc(t("skip"))}</button></div>`;
   }
-  return S.form;
-}
-function fieldHtml(k, f, v) {
-  const L = esc(t("f_" + k));
-  if (f.type === "date") return `<div class="f"><label for="fd-${k}">${L}</label><div class="inp"><input id="fd-${k}" type="date" min="${todayIso()}" value="${esc(v || "")}" data-field="${k}"></div></div>`;
-  if (f.type === "daterange") return `<div class="f"><span class="l">${L}</span><div class="two">
-      <div class="f"><label class="note" for="fd-from">${esc(t("f_from"))}</label><div class="inp"><input id="fd-from" type="date" min="${todayIso()}" value="${esc(v ? v.from : "")}" data-range="from"></div></div>
-      <div class="f"><label class="note" for="fd-to">${esc(t("f_to"))}</label><div class="inp"><input id="fd-to" type="date" min="${todayIso()}" value="${esc(v ? v.to : "")}" data-range="to"></div></div></div></div>`;
-  if (f.type === "stepper") return `<div class="f"><span class="l" id="lb-${k}">${L}</span><div class="stepper" role="group" aria-labelledby="lb-${k}"><button type="button" data-step="${k}:-1" aria-label="−">−</button><b class="num" aria-live="polite">${v}</b><button type="button" data-step="${k}:1" aria-label="+">+</button></div></div>`;
-  if (f.type === "chips") return `<div class="f"><span class="l" id="lb-${k}">${L}</span><div class="chips" role="group" aria-labelledby="lb-${k}">${f.choices.map((c) => `<button type="button" class="chip" data-chip="${k}:${c}" aria-pressed="${v === c}">${esc(t("c_" + c))}</button>`).join("")}</div></div>`;
+  if (id === "notes") return `<h2>${esc(t("f_notes"))}</h2>
+    <div class="f"><label class="sr" for="fn">${esc(t("f_notes"))}</label><div class="inp"><textarea id="fn" rows="5" maxlength="2000" placeholder="${esc(t("notes_ph"))}">${esc(Q.notes)}</textarea></div></div>${actions(true)}`;
+  if (id === "contact") return `<h2>${esc(t("q_contact"))}</h2>
+    <div class="f"><label for="cn">${esc(t("f_name"))}</label><div class="inp"><input id="cn" autocomplete="name" value="${esc(Q.name)}" maxlength="80"></div></div>
+    <div class="f"><label for="cp">${esc(t("f_phone"))}</label><div class="inp"><input id="cp" type="tel" autocomplete="tel" inputmode="tel" value="${esc(Q.phone)}" maxlength="30"></div></div>
+    <div class="f"><label for="ce">${esc(t("f_email"))}</label><div class="inp"><input id="ce" type="email" autocomplete="email" inputmode="email" value="${esc(Q.email)}" maxlength="120"></div></div>
+    <div class="f"><span class="l" id="pref-l">${esc(t("f_contact_pref"))}</span><div class="seg" role="group" aria-labelledby="pref-l">${["call", "text", "email"].map((p) => `<button type="button" data-pref="${p}" aria-pressed="${Q.contactPref === p}">${esc(t("c_" + p))}</button>`).join("")}</div></div>
+    <p class="note">${esc(t("contact_note").split(".")[0])}.</p>
+    ${err ? `<p class="err" role="alert">${esc(err)}</p>` : ""}${actions(true)}`;
+  if (id === "review") {
+    const o = optById[Q.optionId], s = steps(), v = vendors.find((x) => String(x.id) === String(Q.vendorId));
+    const row = (label, val, step, col) => `<div class="rrow${col ? " col" : ""}"><span>${esc(label)}</span><b>${esc(val)}</b><button type="button" data-goto="${s.indexOf(step)}">${esc(t("edit"))}</button></div>`;
+    return `<h2>${esc(t("q_review"))}</h2>
+    <div class="review">
+      <div class="rh"><span class="th ph-fallback">${img(o.photos[0].src, 120)}</span><div><b>${esc(tx(o, "title"))}</b><div class="note">${esc(t("cat_" + Q.cat))}${vendors.length > 1 ? " · " + esc(v ? v.name : t("no_pref")) : ""}</div></div></div>
+      ${catById[Q.cat].fields.map((k) => row(t("f_" + k), valueText(k, Q.fields[k]), "f:" + k)).join("")}
+      ${row(t("f_notes"), Q.notes || "—", "notes", !!Q.notes)}
+      ${row(t("contact"), [Q.name, Q.phone, Q.email].filter(Boolean).join(" · "), "contact")}
+      ${row(t("f_contact_pref"), t("c_" + Q.contactPref), "contact")}
+    </div>
+    ${err ? `<p class="err" role="alert">${esc(err)}</p>` : ""}
+    <div class="actions"><button class="btn btn-ink" type="button" data-submit>${esc(t("submit"))}</button></div>
+    <p class="note" style="text-align:center">${esc(t("free_no_payment"))}</p>`;
+  }
   return "";
 }
-function viewAsk(id) {
-  const o = optById[id]; if (!o) return go("home");
-  app.className = "app";
-  const F = ensureForm(o), cat = catById[o.cat], total = 3;
-  const s1 = cat.fields.filter((k) => k !== "budget");
-  let body = "";
-  if (F.step === 1) body = s1.map((k) => fieldHtml(k, FIELDS[k], F.fields[k])).join("");
-  if (F.step === 2) body = (cat.fields.includes("budget") ? fieldHtml("budget", FIELDS.budget, F.fields.budget) : "") +
-    `<div class="f"><label for="fn">${esc(t("f_notes"))}</label><div class="inp"><textarea id="fn" rows="4" maxlength="2000" placeholder="${esc(t("notes_ph"))}">${esc(F.notes)}</textarea></div></div>`;
-  if (F.step === 3) body = `
-    <div class="f"><label for="cn">${esc(t("f_name"))}</label><div class="inp"><input id="cn" autocomplete="name" value="${esc(F.name)}" maxlength="80"></div></div>
-    <div class="f"><label for="ce">${esc(t("f_email"))}</label><div class="inp"><input id="ce" type="email" autocomplete="email" inputmode="email" value="${esc(F.email)}" maxlength="120"></div></div>
-    <div class="f"><label for="cp">${esc(t("f_phone"))} <span class="note">(${esc(t("optional"))})</span></label><div class="inp"><input id="cp" type="tel" autocomplete="tel" value="${esc(F.phone)}" maxlength="30"></div></div>
-    <div class="f"><label for="cl">${esc(t("f_lang"))}</label><div class="inp"><select id="cl">${LANGS.map((l) => `<option value="${l}" ${l === F.lang ? "selected" : ""}>${esc(window.MAREE_I18N.I18N[l].lang_name)}</option>`).join("")}</select></div></div>
-    <p class="note">${esc(t("contact_note"))}</p>`;
-  const titles = { 1: t("s1_title"), 2: t("s2_title"), 3: t("s3_title") };
-  app.innerHTML = `<div class="pad">
-    <div class="bar-h"><a class="iconbtn" href="#opt-${o.id}" aria-label="${esc(t("back"))}">${I.back}</a><h1>${esc(t("request_quote"))}</h1><span></span></div>
-    <div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="${total}" aria-valuenow="${F.step}"><i style="width:${F.step / total * 100}%"></i></div>
-    <div class="qopt"><div class="th ph-fallback">${img(o.photos[0].src, 120)}</div><div><b>${esc(tx(o, "title"))}</b><div class="note">${esc(fromText(o))} · ${esc(unitText(o))}</div></div></div>
-    <div class="qhead"><p class="note">${esc(t("step", { n: F.step, total }))}</p><h2>${esc(titles[F.step])}</h2></div>
-    <form class="qform" id="qf" novalidate>
-      ${body}
-      <p class="err" id="qerr" role="alert" ${F.err ? "" : "hidden"}>${esc(F.err)}</p>
-      <div class="qfoot">${F.step > 1 ? `<button class="btn btn-line" type="button" data-qback>${esc(t("back"))}</button>` : ""}<button class="btn btn-ink" type="submit" id="qnext">${esc(F.step < total ? t("next") : t("send_request"))}</button></div>
-    </form>
-  </div>`;
+const actions = (cont) => `<div class="actions"><button class="btn btn-ink" type="button" data-next>${esc(t("next"))}</button></div>`;
+
+function header() {
+  return `<div class="top"><a class="wordmark" href="/" data-home>MARÉE<i></i></a><button class="langbtn" type="button" data-lang-open aria-label="${esc(t("language"))}">${I.globe}<span>${lang.toUpperCase()}</span></button></div>`;
 }
-function readStep() {
-  const F = S.form;
-  document.querySelectorAll("[data-field]").forEach((el) => { F.fields[el.dataset.field] = el.value; });
-  const fr = document.querySelector("[data-range=from]"), to = document.querySelector("[data-range=to]");
-  if (fr) F.fields.dates = { from: fr.value, to: (to && to.value) || fr.value };
-  const fn = document.getElementById("fn"); if (fn) F.notes = fn.value;
-  const cn = document.getElementById("cn"); if (cn) { F.name = cn.value.trim(); F.email = document.getElementById("ce").value.trim(); F.phone = document.getElementById("cp").value.trim(); F.lang = document.getElementById("cl").value; }
+function render() {
+  if (Q.done) return renderDone();
+  const s = steps();
+  Q.step = Math.min(Q.step, s.length - 1);
+  const id = s[Q.step];
+  const pct = Math.round((Q.step / (s.length - 1)) * 100);
+  app.innerHTML = `${header()}
+    ${Q.step === 0 ? `<div class="intro"><h1>${esc(t("q_title"))}</h1><p>${esc(t("q_sub"))}</p>
+      <div class="trust"><span>${I.check}${esc(t("trust_free"))}</span><span>${I.check}${esc(t("trust_fast"))}</span><span>${I.check}${esc(t("trust_local"))}</span></div></div>` : `
+      <div class="progress" role="progressbar" aria-label="${esc(t("step", { n: Q.step + 1, total: s.length }))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${Math.max(6, pct)}%"></i></div>
+      <button class="back" type="button" data-back>${I.back}${esc(t("back"))}</button>`}
+    <section class="q" aria-live="polite">${screen(id)}</section>
+    <p class="foot">Marée · Marina del Rey</p>`;
+  persist();
+  const focus = app.querySelector("input,textarea"); if (focus && !("ontouchstart" in window)) focus.focus({ preventScroll: true });
 }
-async function submitStep() {
-  const F = S.form, o = optById[F.optionId];
-  readStep(); F.err = "";
-  if (F.step === 1) {
-    const needDate = catById[o.cat].fields.includes("date") ? !F.fields.date : catById[o.cat].fields.includes("dates") ? !(F.fields.dates && F.fields.dates.from) : false;
-    if (needDate) { F.err = t("err_date"); return viewAsk(o.id); }
-    F.step = 2; return viewAsk(o.id);
+function renderDone() {
+  const d = Q.done;
+  const company = d.vendor || t("done_any");
+  app.innerHTML = `${header()}<section class="done">
+    <div class="seal">${I.check}</div>
+    <h2>${esc(t("done_title"))}</h2>
+    <p>${esc(t("done_body", { company, method: t("m_" + d.contactPref) }))}</p>
+    <div class="refbox"><small>${esc(t("your_ref"))}</small><b class="num">${esc(d.code)}</b></div>
+    ${d.guestCopy ? `<p class="note">${esc(t("done_email"))}</p>` : ""}
+    <button class="btn btn-ink" type="button" data-again style="margin-top:10px">${esc(t("another"))}</button>
+  </section><p class="foot">Marée · Marina del Rey</p>`;
+  persist();
+}
+
+/* ---------- navigation ---------- */
+function go(n) { Q.step = n; err = ""; history.pushState({ step: n }, "", "#s-" + n); render(); scrollTo({ top: 0 }); }
+function next() { go(Math.min(Q.step + 1, steps().length - 1)); }
+window.addEventListener("popstate", (e) => { if (Q.done) return; const n = e.state && typeof e.state.step === "number" ? e.state.step : 0; Q.step = Math.min(n, steps().length - 1); err = ""; render(); });
+function readInputs() {
+  const id = steps()[Q.step];
+  if (id.startsWith("f:")) {
+    const k = id.slice(2), f = FIELDS[k];
+    if (f.type === "date") Q.fields[k] = (document.getElementById("fd") || {}).value || "";
+    if (f.type === "daterange") { const a = document.getElementById("fr").value, b = document.getElementById("ft").value; Q.fields[k] = a ? { from: a, to: b && b >= a ? b : a } : undefined; }
+    if (f.type === "stepper" && Q.fields[k] === undefined) Q.fields[k] = f.def;
   }
-  if (F.step === 2) { F.step = 3; return viewAsk(o.id); }
-  if (!F.name) { F.err = t("err_name"); return viewAsk(o.id); }
-  if (!F.email && !F.phone) { F.err = t("err_contact"); return viewAsk(o.id); }
-  if (F.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(F.email)) { F.err = t("err_email"); return viewAsk(o.id); }
-  const btn = document.getElementById("qnext"); btn.disabled = true; btn.textContent = t("sending");
-  S.contact = { name: F.name, email: F.email, phone: F.phone }; store.set("maree-contact", S.contact);
+  if (id === "notes") Q.notes = document.getElementById("fn").value;
+  if (id === "contact") { Q.name = document.getElementById("cn").value.trim(); Q.phone = document.getElementById("cp").value.trim(); Q.email = document.getElementById("ce").value.trim(); }
+}
+function validate() {
+  const id = steps()[Q.step];
+  if (id.startsWith("f:")) { const k = id.slice(2), f = FIELDS[k]; if (f.required && !(f.type === "daterange" ? Q.fields[k] && Q.fields[k].from : Q.fields[k])) return t("err_date"); }
+  if (id === "contact") {
+    if (!Q.name) return t("err_name");
+    if (!Q.phone && !Q.email) return t("err_contact");
+    if (Q.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(Q.email)) return t("err_email");
+    if ((Q.contactPref === "call" || Q.contactPref === "text") && !Q.phone) return t("err_phone_needed");
+    if (Q.contactPref === "email" && !Q.email) return t("err_email_needed");
+  }
+  return "";
+}
+async function submit(btn) {
+  readInputs();
+  btn.disabled = true; btn.textContent = t("sending"); err = "";
+  store.set("maree-contact", { name: Q.name, email: Q.email, phone: Q.phone });
   try {
-    const r = await api("/api/inquiries", { method: "POST", body: { optionId: o.id, fields: F.fields, notes: F.notes, name: F.name, email: F.email, phone: F.phone, lang: F.lang, guestToken: S.token || undefined } });
-    S.token = r.guestToken; store.set("maree-gt", S.token);
-    S.threads = [r.thread, ...S.threads.filter((x) => x.id !== r.thread.id)];
-    if (F.lang !== S.lang) setLang(F.lang);
-    S.form = null;
-    startLive();
-    toast(t("sent_title"));
-    go("t-" + r.thread.id);
+    const r = await api("/api/tickets", { method: "POST", body: { optionId: Q.optionId, vendorId: Q.vendorId || undefined, fields: Q.fields, notes: Q.notes, name: Q.name, email: Q.email, phone: Q.phone, contactPref: Q.contactPref, lang } });
+    Q.done = r; history.replaceState({ step: Q.step }, "", "#done"); render(); scrollTo({ top: 0 });
   } catch (e) {
-    F.err = e.status && e.status < 500 ? e.message : t("err_network");
-    viewAsk(o.id);
+    err = e.status && e.status < 500 ? e.message : t("err_network"); render();
   }
 }
 
-/* ---------- messages ---------- */
-function statusPill(s) { return `<span class="pill ${s}">${esc(t("st_" + s))}</span>`; }
-function lastLine(x) {
-  const m = x.last; if (!m) return "";
-  if (m.kind === "system") return "";
-  if (m.kind === "quote") return t("quote") + " · " + money(m.data.price, 2);
-  const txt = m.lang !== S.lang && m.tr && m.tr[S.lang] ? m.tr[S.lang] : m.body;
-  return (m.sender === "guest" ? t("you") + ": " : "") + (txt || (m.kind === "request" ? t("request_details") : ""));
-}
-function viewMessages() {
-  app.className = "app";
-  const list = [...S.threads].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-  app.innerHTML = `<div class="pad">
-    <div class="top"><div class="hello"><h1>${esc(t("messages"))}</h1></div><div class="top-acts">${langBtn()}</div></div>
-    ${list.length ? `<div class="tlist">${list.map((x) => { const o = optById[x.optionId] || {}; return `
-      <a class="titem" href="#t-${x.id}"><div class="th ph-fallback">${img(x.photo, 140)}</div>
-        <div class="tx"><b>${esc(o.id ? tx(o, "title") : x.optionTitle)}</b><div class="note">${esc(x.vendor ? x.vendor.name : t("concierge"))}</div><div class="last ${x.unread ? "unread" : ""}">${esc(lastLine(x))}</div></div>
-        <div class="side">${statusPill(x.status)}${x.unread ? `<span class="dot" aria-label="${x.unread} unread"></span>` : ""}</div></a>`; }).join("")}</div>`
-    : `<div class="empty"><b>${esc(t("no_messages"))}</b><p style="margin-top:6px">${esc(t("no_messages_body"))}</p><a class="btn btn-ink" style="margin-top:16px" href="#home">${esc(t("start"))}</a></div>`}
-  </div>${nav("messages")}`;
-}
-function viewThread(id) {
-  if (!S.token) return go("messages");
-  startLive();
-  app.className = "app full";
-  app.innerHTML = `<div class="chatwrap" id="chatroot"></div>`;
-  S.chat = Chat(document.getElementById("chatroot"), {
-    role: "guest", lang: S.lang, t, auth: { guestToken: S.token }, live: S.live,
-    header: (th) => { const o = optById[th.optionId] || {}; return `<a class="bk" href="#messages" aria-label="${esc(t("back"))}">${I.back}</a>
-      <div class="th ph-fallback">${img(th.photo, 100)}</div>
-      <div class="ti"><b>${esc(o.id ? tx(o, "title") : th.optionTitle)}</b><span>${esc(th.vendor ? th.vendor.name : t("concierge"))} · ${statusPill(th.status)}</span></div>`; },
-    onThread: (th) => { const i = S.threads.findIndex((x) => x.id === th.id); if (i >= 0) S.threads[i] = { ...th, unread: 0 }; }
-  });
-  S.chat.load(id).catch(() => { toast(t("err_network")); go("messages"); });
-}
-
-/* ---------- router ---------- */
-let current = "";
-function go(h) { location.hash = h; }
-function route(keepScroll) {
-  const y = scrollY;
-  if (S.chat && !location.hash.startsWith("#t-")) { S.chat.destroy(); S.chat = null; }
-  let h = location.hash.slice(1);
-  if (!h) h = store.get("maree-welcomed", false) ? "home" : "welcome";
-  const [name, ...rest] = h.split("-"); const arg = rest.join("-");
-  current = name;
-  if (name === "welcome") viewWelcome();
-  else if (name === "cat") viewCat(arg);
-  else if (name === "opt") viewOption(arg);
-  else if (name === "ask") viewAsk(arg);
-  else if (name === "messages") viewMessages();
-  else if (name === "t") { if (keepScroll && S.chat) S.chat.setLang(S.lang, t); else viewThread(Number(arg)); }
-  else { current = "home"; viewHome(); }
-  if (keepScroll) scrollTo(0, y);
-}
-window.addEventListener("hashchange", () => { layer.innerHTML = ""; route(); scrollTo(0, 0); });
-
-document.addEventListener("click", (e) => {
-  const el = e.target;
-  if (el.closest("[data-welcomed]")) store.set("maree-welcomed", true);
-  if (el.closest("[data-lang-open]")) { langSheet(); return; }
-  const lb = el.closest("[data-lang]"); if (lb) { setLang(lb.dataset.lang); return; }
-  if (el.matches("[data-close]")) { layer.innerHTML = ""; return; }
-  const g = el.closest("[data-gal]"); if (g) { S.gal = Number(g.dataset.gal); route(true); return; }
-  if (S.form && current === "ask") {
-    const c = el.closest("[data-chip]"); if (c) { readStep(); const [k, v] = c.dataset.chip.split(":"); S.form.fields[k] = S.form.fields[k] === v ? undefined : v; viewAsk(S.form.optionId); return; }
-    const s = el.closest("[data-step]"); if (s) { readStep(); const [k, d] = s.dataset.step.split(":"); const f = FIELDS[k]; S.form.fields[k] = Math.max(f.min, Math.min(f.max, (S.form.fields[k] || f.def) + Number(d))); viewAsk(S.form.optionId); return; }
-    if (el.closest("[data-qback]")) { readStep(); S.form.err = ""; S.form.step--; viewAsk(S.form.optionId); return; }
-  }
+app.addEventListener("click", async (e) => {
+  const b = e.target.closest("button,a"); if (!b) return;
+  if (b.dataset.cat) { if (Q.cat !== b.dataset.cat) { Q.cat = b.dataset.cat; Q.optionId = null; Q.vendorId = ""; Q.fields = {}; } next(); return; }
+  if (b.dataset.opt) { if (Q.optionId !== b.dataset.opt) { Q.optionId = b.dataset.opt; Q.vendorId = ""; } b.setAttribute("aria-pressed", "true"); await loadVendors(); next(); return; }
+  if (b.dataset.vendor !== undefined) { Q.vendorId = b.dataset.vendor; next(); return; }
+  if (b.dataset.chip) { const k = steps()[Q.step].slice(2); Q.fields[k] = b.dataset.chip; app.querySelectorAll("[data-chip]").forEach((x) => x.setAttribute("aria-pressed", x === b)); setTimeout(next, 180); return; }
+  if (b.dataset.step) { const k = steps()[Q.step].slice(2), f = FIELDS[k]; Q.fields[k] = Math.max(f.min, Math.min(f.max, (Q.fields[k] ?? f.def) + Number(b.dataset.step))); b.parentElement.querySelector("b").textContent = Q.fields[k]; persist(); return; }
+  if (b.dataset.pref) { readInputs(); Q.contactPref = b.dataset.pref; err = ""; render(); return; }
+  if (b.hasAttribute("data-next")) { readInputs(); const v = validate(); if (v) { err = v; render(); return; } next(); return; }
+  if (b.hasAttribute("data-back")) { history.back(); return; }
+  if (b.dataset.goto !== undefined) { go(Number(b.dataset.goto)); return; }
+  if (b.hasAttribute("data-submit")) { submit(b); return; }
+  if (b.hasAttribute("data-again")) { Object.assign(Q, blank(), { name: Q.name, email: Q.email, phone: Q.phone }); vendors = []; history.replaceState({ step: 0 }, "", location.pathname); render(); return; }
+  if (b.hasAttribute("data-home")) { e.preventDefault(); if (!Q.done) { Q.step = 0; history.replaceState({ step: 0 }, "", location.pathname); render(); } return; }
 });
-document.addEventListener("submit", (e) => { if (e.target.id === "qf") { e.preventDefault(); submitStep(); } });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape" && layer.innerHTML) layer.innerHTML = ""; });
+app.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.matches("input")) { e.preventDefault(); const n = app.querySelector("[data-next]"); if (n) n.click(); } });
 
-route();
-loadCatalogLang();
-if (S.token) { startLive(); loadThreads(); }
+/* language sheet */
+document.addEventListener("click", (e) => {
+  if (e.target.closest("[data-lang-open]")) {
+    layer.innerHTML = `<div class="scrim" data-close><div class="sheet pad" role="dialog" aria-modal="true" aria-labelledby="lg-t"><div class="grab"></div><h2 id="lg-t" style="font-size:19px">${esc(t("language"))}</h2>
+      <div class="langlist">${LANGS.map((l) => `<button type="button" class="ans plain" data-lang="${l}" aria-pressed="${l === lang}"><span class="tx"><b>${esc(NAMES[l].lang_name)}</b></span><span class="radio"></span></button>`).join("")}</div></div></div>`;
+    return;
+  }
+  const lb = e.target.closest("[data-lang]");
+  if (lb) { lang = lb.dataset.lang; store.set("maree-lang", lang); t = makeT(lang); document.documentElement.lang = lang; layer.innerHTML = ""; render(); loadCatalogLang(); return; }
+  if (e.target.matches("[data-close]")) layer.innerHTML = "";
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") layer.innerHTML = ""; });
+
+history.replaceState({ step: Q.step }, "", Q.step ? "#s-" + Q.step : location.pathname);
+(async () => { if (Q.optionId) await loadVendors(); render(); loadCatalogLang(); })();
 })();
 </script>
 </body>

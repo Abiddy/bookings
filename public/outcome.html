@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Marée Request Update</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/shared.css">
+<style>
+body{background:var(--ground)}
+.card2{max-width:480px;margin:8vh auto 40px;background:var(--bg);border-radius:28px;padding-top:26px;padding-bottom:26px;display:flex;flex-direction:column;gap:16px}
+.wm{font-weight:800;letter-spacing:.06em;font-size:14px}
+h1{font-size:23px}
+.sum{border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.sum div{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
+.sum div:first-child{border-top:0;background:var(--soft)}
+.sum span{color:var(--muted)}
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice{display:flex;align-items:center;gap:12px;min-height:58px;border:1.5px solid var(--line);border-radius:16px;background:var(--bg);padding:0 16px;font-weight:700;font-size:15.5px;text-align:left;width:100%}
+.choice[aria-pressed="true"]{border-color:var(--ink);background:var(--soft)}
+.choice .radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;margin-left:auto}
+.choice[aria-pressed="true"] .radio{border-color:var(--ink)}
+.choice[aria-pressed="true"] .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--ink)}
+.ok{display:flex;gap:10px;align-items:center;background:var(--ok-soft);color:var(--ok);border-radius:14px;padding:12px 14px;font-weight:700}
+</style>
+</head>
+<body>
+<main class="card2 pad" id="app"><p class="muted">Loading…</p></main>
+<script src="/i18n.js"></script>
+<script src="/shared.js"></script>
+<script>
+(() => {
+"use strict";
+const { esc, money, api } = window.M;
+const app = document.getElementById("app");
+const q = new URLSearchParams(location.search);
+const c = q.get("c"), k = q.get("k");
+let pick = ["booked", "contacted", "lost"].includes(q.get("r")) ? q.get("r") : "", tk = null, msg = "", saved = false;
+const LABEL = { booked: "Booked ✓", contacted: "Contacted, still deciding", lost: "Didn't book" };
+const STATUS = { new: "Waiting for you", contacted: "Contacted", booked: "Booked", lost: "Didn't book", closed: "Closed" };
+function render() {
+  app.innerHTML = `<div class="wm">MARÉE</div>
+    <h1>How did it go with ${esc(tk.guestFirstName)}?</h1>
+    <div class="sum"><div><b>${esc(tk.option)}</b><b>Ref ${esc(tk.code)}</b></div>${tk.details.map(([a, b]) => `<div><span>${esc(a)}</span><b>${esc(b)}</b></div>`).join("")}<div><span>Current status</span><b>${esc(STATUS[tk.status] || tk.status)}${tk.amount ? " · " + money(tk.amount, 2) : ""}</b></div></div>
+    ${saved ? `<div class="ok" role="status">Thanks, that's saved.</div>` : ""}
+    <form id="f" class="choices" novalidate>
+      ${["booked", "contacted", "lost"].map((r) => `<button type="button" class="choice" data-r="${r}" aria-pressed="${pick === r}">${LABEL[r]}<span class="radio"></span></button>`).join("")}
+      ${pick === "booked" ? `<div class="f"><label for="amt">Total the customer is paying (USD)</label><div class="inp"><span>$</span><input id="amt" inputmode="decimal" placeholder="450" value="${tk.amount || ""}"></div><p class="note">Used to calculate the commission in your Marée partner agreement.</p></div>` : ""}
+      ${msg ? `<p class="err" role="alert">${esc(msg)}</p>` : ""}
+      <button class="btn btn-ink" type="submit" ${pick ? "" : "disabled"}>Save update</button>
+    </form>`;
+  const a = document.getElementById("amt"); if (a && !saved) a.focus();
+}
+app.addEventListener("click", (e) => { const b = e.target.closest("[data-r]"); if (b) { pick = b.dataset.r; msg = ""; saved = false; render(); } });
+app.addEventListener("submit", async (e) => {
+  e.preventDefault(); if (!pick) return;
+  const amount = pick === "booked" ? parseFloat(String(document.getElementById("amt").value).replace(/[^0-9.]/g, "")) : undefined;
+  if (pick === "booked" && !(amount > 0)) { msg = "Add the total so the booking can be recorded."; render(); return; }
+  try { tk = (await api("/api/outcome", { method: "POST", body: { c, k, result: pick, amount } })).ticket; saved = true; msg = ""; }
+  catch (err) { msg = err.message; }
+  render();
+});
+(async () => {
+  try { tk = (await api(`/api/outcome?c=${encodeURIComponent(c || "")}&k=${encodeURIComponent(k || "")}`)).ticket; render(); }
+  catch (e) { app.innerHTML = `<div class="wm">MARÉE</div><h1>This link doesn't work</h1><p class="muted">Use the buttons in the original request email, or reply to that email if something's wrong.</p>`; }
+})();
+})();
+</script>
+</body>
+</html>

@@ -52,10 +52,13 @@ const FIELDS = {
   pickup:   { type: "chips", choices: ["hotel", "lax", "other"] },
   carType:  { type: "chips", choices: ["convertible", "suv", "luxury", "electric", "any"] },
   occasion: { type: "chips", choices: ["birthday", "anniversary", "proposal", "family", "business", "other"] },
-  budget:   { type: "chips", choices: ["b1", "b2", "b3", "b4", "unsure"] }
+  budget:   { type: "chips", choices: ["b1", "b2", "b3", "b4", "unsure"] },
+  qty:      { type: "stepper", min: 1, max: 30, def: 2 },
+  delivery: { type: "chips", choices: ["deliver", "shop"] }
 };
 
 const CATS = [
+  { id: "rentals", name: "Equipment rentals", photo: ph("cruiser"), fields: ["dates", "qty", "delivery", "budget"] },
   { id: "boats", name: "Boats & yachts", photo: ph("sail"), fields: ["date", "time", "guests", "duration", "budget"] },
   { id: "tours", name: "Tours", photo: ph("canals"), fields: ["date", "time", "guests", "budget"] },
   { id: "water", name: "Beach & water", photo: ph("sup"), fields: ["date", "time", "guests", "level", "budget"] },
@@ -65,6 +68,22 @@ const CATS = [
 ];
 
 const OPTIONS = [
+  { id: "bike-rental", cat: "rentals", title: "Bikes & e-bikes", from: 35, unit: "day", photos: [ph("cruiser"), ph("bikeRail"), ph("ride")],
+    blurb: "Beach cruisers or e-bikes for the beach path to Venice and Santa Monica.",
+    incl: ["Helmet and lock", "Delivery available", "Half day, full day or weekly"] },
+  { id: "paddleboard-rental", cat: "rentals", title: "Paddleboards", from: 45, unit: "day", photos: [ph("sup2"), ph("sup"), ph("mdr")],
+    blurb: "Stand-up paddleboards for the calm water of the marina and Mother's Beach.",
+    incl: ["Board, paddle and leash", "Life vest", "Hourly or daily"] },
+  { id: "kayak-rental", cat: "rentals", title: "Kayaks", from: 40, unit: "day", photos: [ph("kayak"), ph("sup2"), ph("mdr")],
+    blurb: "Single or tandem kayaks to explore the harbor channels at your own pace.",
+    incl: ["Kayak and paddles", "Life vests", "Hourly or daily"] },
+  { id: "surf-rental", cat: "rentals", title: "Surfboards & wetsuits", from: 30, unit: "day", photos: [ph("surf"), ph("beachFun"), ph("walk")],
+    blurb: "Soft-tops for beginners and hard boards for experienced surfers, with wetsuits.",
+    incl: ["Board and leash", "Wetsuit", "Daily or weekly"] },
+  { id: "beach-gear", cat: "rentals", title: "Beach gear set", from: 40, unit: "day", photos: [ph("beachFun"), ph("picnic"), ph("walk")],
+    blurb: "Chairs, umbrella, cooler and beach games, dropped off at the hotel.",
+    incl: ["Chairs and umbrella", "Cooler", "Delivered to the hotel"] },
+
   { id: "sunset-sail", cat: "boats", title: "Sunset harbor sail", from: 85, unit: "person", photos: [ph("sail"), ph("boatDusk"), ph("sailDock")],
     blurb: "A classic sailboat out past the breakwater as the light turns gold over Santa Monica Bay.",
     incl: ["Skipper and crew", "Drinks on board", "About 2 hours"] },
@@ -100,9 +119,7 @@ const OPTIONS = [
   { id: "surf-lesson", cat: "water", title: "Surf lesson", from: 95, unit: "person", photos: [ph("surf"), ph("beachFun"), ph("walk")],
     blurb: "Beginner-friendly lessons at Venice or Santa Monica with a certified coach.",
     incl: ["Board and wetsuit", "Coach", "About 2 hours"] },
-  { id: "beach-bikes", cat: "water", title: "Beach cruiser rental", from: 35, unit: "bike", photos: [ph("cruiser"), ph("bikeRail"), ph("strand")],
-    blurb: "Cruisers or e-bikes delivered to the lobby, ready for the beach path.",
-    incl: ["Helmet and lock", "Delivered to the hotel", "Half or full day"] },
+
 
   { id: "convertible", cat: "cars", title: "Convertible rental", from: 150, unit: "day", photos: [ph("convert"), ph("classic"), ph("strand")],
     blurb: "Top-down driving on the Pacific Coast Highway. Delivered to the hotel.",

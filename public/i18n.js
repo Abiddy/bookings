@@ -237,6 +237,59 @@ ko: {
   ref: "번호 {code}", photo_by: "사진: {by} / Unsplash", language: "언어", reconnecting: "다시 연결하는 중…", closed_note: "이 요청은 종료됐어요. 언제든 새 요청을 보낼 수 있어요."
 }
 };
+
+/* Quote-form screens */
+const QUOTE = {
+en: { q_title: "Get a quote for anything around Marina del Rey", q_sub: "Answer a few quick questions. A local company calls or emails you back with a price.",
+  trust_free: "Free, no payment", trust_fast: "Replies within hours", trust_local: "Trusted local companies",
+  q_cat: "What do you need?", q_option: "Which one?", q_vendor: "Any company you prefer?", no_pref: "No preference", no_pref_sub: "We'll send it to the best available company",
+  q_contact: "Where should they reach you?", f_contact_pref: "Best way to reach you", c_call: "Call", c_text: "Text", c_email: "Email",
+  q_review: "Check your request", edit: "Edit", submit: "Send my request", skip: "Skip",
+  done_title: "Request sent", done_body: "{company} will {method} you, usually within a few hours.", done_any: "A local company", m_call: "call", m_text: "text", m_email: "email",
+  done_email: "We emailed you a copy.", your_ref: "Your reference", another: "Start another request", err_phone_needed: "Add a phone number so they can call or text you.", err_email_needed: "Add an email so they can write to you.",
+  f_qty: "How many?", f_delivery: "Delivery", c_deliver: "Deliver to my hotel", c_shop: "I'll pick up", cat_rentals: "Equipment rentals", typical_short: "Typical: {price} {unit}", details: "Details", contact: "Contact" },
+es: { q_title: "Pide presupuesto para lo que quieras en Marina del Rey", q_sub: "Responde unas preguntas rápidas. Una empresa local te llama o te escribe con el precio.",
+  trust_free: "Gratis, sin pagar", trust_fast: "Respuesta en horas", trust_local: "Empresas locales de confianza",
+  q_cat: "¿Qué necesitas?", q_option: "¿Cuál?", q_vendor: "¿Prefieres alguna empresa?", no_pref: "Sin preferencia", no_pref_sub: "La enviaremos a la mejor empresa disponible",
+  q_contact: "¿Cómo te contactan?", f_contact_pref: "Mejor forma de contactarte", c_call: "Llamada", c_text: "Mensaje", c_email: "Correo",
+  q_review: "Revisa tu solicitud", edit: "Editar", submit: "Enviar mi solicitud", skip: "Omitir",
+  done_title: "Solicitud enviada", done_body: "{company} te va a {method}, normalmente en pocas horas.", done_any: "Una empresa local", m_call: "llamar", m_text: "escribir por mensaje", m_email: "escribir por correo",
+  done_email: "Te enviamos una copia por correo.", your_ref: "Tu referencia", another: "Hacer otra solicitud", err_phone_needed: "Añade un teléfono para que te llamen o escriban.", err_email_needed: "Añade un correo para que te escriban.",
+  f_qty: "¿Cuántos?", f_delivery: "Entrega", c_deliver: "Entregar en mi hotel", c_shop: "Lo recojo yo", cat_rentals: "Alquiler de equipo", typical_short: "Habitual: {price} {unit}", details: "Detalles", contact: "Contacto" },
+fr: { q_title: "Un devis pour tout ce que vous voulez à Marina del Rey", q_sub: "Répondez à quelques questions. Une entreprise locale vous appelle ou vous écrit avec un prix.",
+  trust_free: "Gratuit, sans paiement", trust_fast: "Réponse en quelques heures", trust_local: "Entreprises locales de confiance",
+  q_cat: "De quoi avez-vous besoin ?", q_option: "Lequel ?", q_vendor: "Une entreprise en particulier ?", no_pref: "Peu importe", no_pref_sub: "Nous l'enverrons à la meilleure entreprise disponible",
+  q_contact: "Comment vous joindre ?", f_contact_pref: "Moyen préféré", c_call: "Appel", c_text: "SMS", c_email: "E-mail",
+  q_review: "Vérifiez votre demande", edit: "Modifier", submit: "Envoyer ma demande", skip: "Passer",
+  done_title: "Demande envoyée", done_body: "{company} va vous {method}, en général sous quelques heures.", done_any: "Une entreprise locale", m_call: "appeler", m_text: "envoyer un SMS", m_email: "écrire",
+  done_email: "Nous vous avons envoyé une copie par e-mail.", your_ref: "Votre référence", another: "Faire une autre demande", err_phone_needed: "Ajoutez un téléphone pour être appelé ou recevoir un SMS.", err_email_needed: "Ajoutez un e-mail pour recevoir une réponse écrite.",
+  f_qty: "Combien ?", f_delivery: "Livraison", c_deliver: "Livrer à mon hôtel", c_shop: "Je passe le chercher", cat_rentals: "Location d'équipement", typical_short: "Habituel : {price} {unit}", details: "Détails", contact: "Contact" },
+zh: { q_title: "玛丽安德尔湾的一切，一键获取报价", q_sub: "回答几个简单问题，本地商家会致电或发邮件给你报价。",
+  trust_free: "免费，无需付款", trust_fast: "数小时内回复", trust_local: "可靠的本地商家",
+  q_cat: "你需要什么？", q_option: "选哪一个？", q_vendor: "有指定的商家吗？", no_pref: "无偏好", no_pref_sub: "我们会发给最合适的商家",
+  q_contact: "怎么联系你？", f_contact_pref: "首选联系方式", c_call: "电话", c_text: "短信", c_email: "邮件",
+  q_review: "确认你的请求", edit: "修改", submit: "发送请求", skip: "跳过",
+  done_title: "请求已发送", done_body: "{company}会通过{method}联系你，通常在几个小时内。", done_any: "本地商家", m_call: "电话", m_text: "短信", m_email: "邮件",
+  done_email: "我们已将副本发到你的邮箱。", your_ref: "你的编号", another: "再提交一个请求", err_phone_needed: "请填写电话，方便对方致电或发短信。", err_email_needed: "请填写邮箱，方便对方回复。",
+  f_qty: "数量", f_delivery: "取送方式", c_deliver: "送到我的酒店", c_shop: "我自己去取", cat_rentals: "装备租赁", typical_short: "参考：{price} {unit}", details: "详情", contact: "联系方式" },
+ja: { q_title: "マリナ・デル・レイのあらゆることを見積もり", q_sub: "いくつかの質問に答えるだけ。地元の会社が電話かメールで料金をお知らせします。",
+  trust_free: "無料・支払い不要", trust_fast: "数時間以内に返信", trust_local: "信頼できる地元の会社",
+  q_cat: "何が必要ですか？", q_option: "どれにしますか？", q_vendor: "希望の会社はありますか？", no_pref: "指定なし", no_pref_sub: "最適な会社にお送りします",
+  q_contact: "連絡先を教えてください", f_contact_pref: "希望の連絡方法", c_call: "電話", c_text: "SMS", c_email: "メール",
+  q_review: "内容の確認", edit: "変更", submit: "依頼を送信", skip: "スキップ",
+  done_title: "依頼を送信しました", done_body: "{company}から{method}で連絡があります。通常は数時間以内です。", done_any: "地元の会社", m_call: "電話", m_text: "SMS", m_email: "メール",
+  done_email: "控えをメールでお送りしました。", your_ref: "受付番号", another: "別の依頼をする", err_phone_needed: "電話かSMSで連絡できるよう電話番号を入力してください。", err_email_needed: "メールで連絡できるようメールアドレスを入力してください。",
+  f_qty: "数量", f_delivery: "受け取り方法", c_deliver: "ホテルに届けてほしい", c_shop: "自分で取りに行く", cat_rentals: "レンタル用品", typical_short: "目安：{price}（{unit}）", details: "内容", contact: "連絡先" },
+ko: { q_title: "마리나 델 레이의 모든 것, 견적부터 받아 보세요", q_sub: "몇 가지 질문에 답하면 현지 업체가 전화나 이메일로 가격을 알려 드려요.",
+  trust_free: "무료, 결제 없음", trust_fast: "몇 시간 안에 답장", trust_local: "믿을 수 있는 현지 업체",
+  q_cat: "무엇이 필요하세요?", q_option: "어떤 걸로 할까요?", q_vendor: "원하는 업체가 있나요?", no_pref: "상관없음", no_pref_sub: "가장 적합한 업체에 보내 드릴게요",
+  q_contact: "어떻게 연락드릴까요?", f_contact_pref: "선호하는 연락 방법", c_call: "전화", c_text: "문자", c_email: "이메일",
+  q_review: "요청 내용 확인", edit: "수정", submit: "요청 보내기", skip: "건너뛰기",
+  done_title: "요청을 보냈어요", done_body: "{company}에서 {method}(으)로 연락드릴 거예요. 보통 몇 시간 안에 연락이 와요.", done_any: "현지 업체", m_call: "전화", m_text: "문자", m_email: "이메일",
+  done_email: "이메일로 사본을 보냈어요.", your_ref: "접수 번호", another: "다른 요청하기", err_phone_needed: "전화나 문자를 받으려면 전화번호를 입력해 주세요.", err_email_needed: "이메일로 답장을 받으려면 이메일을 입력해 주세요.",
+  f_qty: "몇 개 필요하세요?", f_delivery: "수령 방법", c_deliver: "호텔로 배달", c_shop: "직접 가지러 갈게요", cat_rentals: "장비 대여", typical_short: "참고: {price} {unit}", details: "내용", contact: "연락처" }
+};
+for (const l in QUOTE) Object.assign(I18N[l], QUOTE[l]);
 function makeT(lang) {
   const d = I18N[lang] || I18N.en;
   return (key, vars) => {

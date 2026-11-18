@@ -26,12 +26,12 @@ const root = document.getElementById("root");
 const ss = { get: (k) => { try { return sessionStorage.getItem(k) || ""; } catch { return ""; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch {} }, del: (k) => { try { sessionStorage.removeItem(k); } catch {} } };
 let pw = ss.get("maree-admin");
 const auth = () => ({ admin: pw });
-const A = { tab: "inbox", vendors: [], inbox: null, live: null, summary: null };
+const A = { tab: "tickets", vendors: [], inbox: null, live: null, summary: null, messaging: false, tickets: [], tfilter: "open" };
 
 function login(msg) {
   root.innerHTML = `<form class="login pad" id="lf">
     <h1>Marée admin desk</h1>
-    <p class="muted">Requests, partners and commission.</p>
+    <p class="muted">Quote requests, partners and commission.</p>
     <div class="f"><label for="pw">Password</label><div class="inp"><input id="pw" type="password" autocomplete="current-password"></div></div>
     <p class="err" ${msg ? "" : "hidden"}>${esc(msg || "")}</p>
     <button class="btn btn-ink" type="submit">Sign in</button>
@@ -47,7 +47,7 @@ function shell() {
   root.innerHTML = `<div class="shell">
     <header class="topbar pad">
       <div class="brand"><b>MARÉE</b><span>Admin desk</span></div>
-      <nav class="tabs" aria-label="Sections">${[["inbox", "Inbox"], ["partners", "Partners"], ["earnings", "Earnings"]].map(([k, l]) => `<a href="#" data-tab="${k}" ${A.tab === k ? 'aria-current="page"' : ""}>${l}</a>`).join("")}</nav>
+      <nav class="tabs" aria-label="Sections">${(A.messaging ? [["inbox", "Inbox"], ["partners", "Partners"], ["earnings", "Earnings"]] : [["tickets", "Tickets"], ["partners", "Partners"], ["earnings", "Earnings"]]).map(([k, l]) => `<a href="#" data-tab="${k}" ${A.tab === k ? 'aria-current="page"' : ""}>${l}</a>`).join("")}</nav>
       <div class="acts"><button class="btn btn-line btn-sm" type="button" id="al">Turn on alerts</button><button class="btn btn-line btn-sm" type="button" id="so">Sign out</button></div>
     </header>
     <div id="view" class="view"></div>
@@ -74,8 +74,41 @@ function setTab(tab) {
     if (location.hash) history.replaceState(null, "", location.pathname);
     document.querySelector(".shell").classList.remove("chatting");
     view.innerHTML = `<div class="pagewrap pad" id="page"><p class="muted">Loading…</p></div>`;
-    (tab === "partners" ? renderPartners : renderEarnings)();
+    (tab === "partners" ? renderPartners : tab === "tickets" ? renderTickets : renderEarnings)();
   }
+}
+
+/* ---------- tickets (email mode) ---------- */
+const TST = { new: ["new", "New"], contacted: ["replied", "Contacted"], booked: ["booked", "Booked"], lost: ["closed", "Didn't book"], closed: ["closed", "Closed"] };
+const tpill = (s) => `<span class="pill ${(TST[s] || [s])[0]}">${(TST[s] || [s, s])[1]}</span>`;
+const TF = { open: (x) => ["new", "contacted"].includes(x.status), new: (x) => x.status === "new", booked: (x) => x.status === "booked", lost: (x) => x.status === "lost" || x.status === "closed", all: () => true };
+const when = (iso) => { if (!iso) return "—"; const d = new Date(iso); return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }); };
+const ageH = (iso) => (Date.now() - Date.parse(iso)) / 36e5;
+async function renderTickets() {
+  const page = document.getElementById("page");
+  try { A.tickets = (await api("/api/admin/tickets", { auth: auth() })).tickets; const cfg = await api("/api/config"); A.email = cfg.email; }
+  catch (e) { page.innerHTML = `<p class="err">${esc(e.message)}</p>`; return; }
+  const list = A.tickets.filter(TF[A.tfilter]);
+  const stale = A.tickets.filter((x) => x.status === "new" && ageH(x.createdAt) > 24).length;
+  page.innerHTML = `
+    <div><h1 style="font-size:24px">Quote requests</h1><p class="muted" style="margin-top:4px">Each request is emailed to the partner as a ticket. They contact the customer directly and tap Booked or Didn't book in the email. You can also update a ticket here.</p></div>
+    ${A.email ? "" : `<p class="err">Email isn't set up, so tickets aren't reaching partners yet. Add RESEND_API_KEY and EMAIL_FROM in Railway, then use Resend on each ticket.</p>`}
+    ${stale ? `<p class="note"><b>${stale}</b> request${stale > 1 ? "s have" : " has"} had no update for over a day. Worth a nudge to the partner.</p>` : ""}
+    <div class="filters" role="group" aria-label="Filter">${[["open", "Open"], ["new", "New"], ["booked", "Booked"], ["lost", "Didn't book"], ["all", "All"]].map(([k, l]) => `<button class="chip" type="button" data-tf="${k}" aria-pressed="${A.tfilter === k}">${l} <span class="note">${A.tickets.filter(TF[k]).length}</span></button>`).join("")}</div>
+    ${list.length ? `<div class="tbl"><table><thead><tr><th>Received</th><th>Customer</th><th>Request</th><th>Partner</th><th>Status</th><th>Email</th></tr></thead><tbody>
+      ${list.map((x) => `<tr data-ticket="${x.id}">
+        <td>${when(x.createdAt)}<div class="note">Ref ${esc(x.code)}</div></td>
+        <td><b>${esc(x.guest.name)}</b><div class="note">${esc([x.guest.phone, x.guest.email].filter(Boolean).join(" · "))}</div><div class="note">Prefers ${esc({ call: "a call", text: "a text", email: "email" }[x.guest.pref] || "—")}${x.guest.lang !== "en" ? " · speaks " + esc(NAMES[x.guest.lang] ? NAMES[x.guest.lang].lang_name : x.guest.lang) : ""}</div></td>
+        <td><b>${esc(x.option)}</b><details><summary class="note" style="cursor:pointer">Details</summary><div class="note" style="margin-top:6px">${x.details.map(([a, b]) => `${esc(a)}: <b>${esc(b)}</b>`).join("<br>")}${x.notes ? `<br><span style="white-space:pre-wrap">“${esc(x.notes)}”</span>` : ""}</div></details></td>
+        <td><label class="sr" for="tv-${x.id}">Partner</label><select id="tv-${x.id}" data-tvendor="${x.id}" style="height:34px;border-radius:999px;border:1px solid var(--line);padding:0 8px;font-weight:600;max-width:170px"><option value="">You (no partner)</option>${A.vendors.filter((v) => v.active || (x.vendor && x.vendor.id === v.id)).map((v) => `<option value="${v.id}" ${x.vendor && x.vendor.id === v.id ? "selected" : ""}>${esc(v.name)}</option>`).join("")}</select></td>
+        <td>${tpill(x.status)}${x.amount ? `<div class="num" style="font-weight:700;margin-top:4px">${money(x.amount, 2)}</div>` : ""}
+          <div style="margin-top:6px"><label class="sr" for="ts-${x.id}">Change status</label><select id="ts-${x.id}" data-tstatus="${x.id}" style="height:32px;border-radius:999px;border:1px solid var(--line);padding:0 8px;font-size:12.5px;font-weight:600"><option value="">Update…</option><option value="contacted">Contacted</option><option value="booked">Booked</option><option value="lost">Didn't book</option><option value="new">Back to new</option></select></div></td>
+        <td><div class="note" style="max-width:180px;overflow-wrap:anywhere">${esc(x.emailStatus ? x.emailStatus.replace(/^sent /, "Sent to ") : "—")}</div><button class="btn btn-line btn-sm" type="button" data-resend="${x.id}" style="margin-top:6px">Resend</button></td>
+      </tr>`).join("")}</tbody></table></div>` : `<div class="sbox" style="text-align:center"><p class="muted">No requests here yet. They appear as soon as a customer sends the quote form.</p></div>`}`;
+}
+async function updateTicket(id, body) {
+  try { await api(`/api/admin/tickets/${id}`, { method: "POST", body, auth: auth() }); toast("Saved"); renderTickets(); }
+  catch (e) { toast(e.message); renderTickets(); }
 }
 
 /* ---------- partners ---------- */
@@ -86,7 +119,7 @@ function optChecks(sel, idp) {
 function vendorForm(v, idp) {
   return `<div class="grid2">
     <div class="f"><label for="${idp}-n">Company name</label><div class="inp"><input id="${idp}-n" value="${esc(v.name || "")}" maxlength="80" required></div></div>
-    <div class="f"><label for="${idp}-e">Email for alerts</label><div class="inp"><input id="${idp}-e" type="email" value="${esc(v.email || "")}" maxlength="120"></div></div>
+    <div class="f"><label for="${idp}-e">Email for tickets</label><div class="inp"><input id="${idp}-e" type="email" value="${esc(v.email || "")}" maxlength="120"></div></div>
     <div class="f"><label for="${idp}-p">Phone</label><div class="inp"><input id="${idp}-p" type="tel" value="${esc(v.phone || "")}" maxlength="30"></div></div>
     <div class="f"><label for="${idp}-l">Language they reply in</label><div class="inp"><select id="${idp}-l">${LANGS.map((l) => `<option value="${l}" ${l === (v.lang || "en") ? "selected" : ""}>${esc(NAMES[l].lang_name)}</option>`).join("")}</select></div></div>
   </div>
@@ -102,7 +135,7 @@ async function renderPartners() {
   const covered = new Set(A.vendors.filter((v) => v.active).flatMap((v) => v.options));
   const uncovered = OPTIONS.filter((o) => !covered.has(o.id));
   page.innerHTML = `
-    <div><h1 style="font-size:24px">Partners</h1><p class="muted" style="margin-top:4px">Each partner gets a private inbox link. Requests for the options you tick go straight to them. Anything unassigned comes to your inbox.</p></div>
+    <div><h1 style="font-size:24px">Partners</h1><p class="muted" style="margin-top:4px">${A.messaging ? "Each partner gets a private inbox link. Requests for the options you tick go straight to them. Anything unassigned comes to your inbox." : "Tickets for the options you tick are emailed to the partner. If several partners cover the same option, the customer can pick one. Anything no partner covers is emailed to you (ADMIN_EMAIL)."}</p></div>
     ${uncovered.length ? `<p class="note">${uncovered.length} option${uncovered.length > 1 ? "s go" : " goes"} to you because no partner covers ${uncovered.length > 1 ? "them" : "it"}: ${esc(uncovered.map((o) => o.title).join(", "))}.</p>` : ""}
     <details class="sbox" ${A.vendors.length ? "" : "open"}><summary style="font-weight:700;cursor:pointer">Add a partner</summary>
       <form id="nv" style="display:flex;flex-direction:column;gap:14px;margin-top:14px">${vendorForm({}, "nv")}<div><button class="btn btn-ink btn-sm" type="submit">Add partner</button></div></form>
@@ -110,7 +143,8 @@ async function renderPartners() {
     ${A.vendors.map((v) => `<form class="vcard" data-vendor="${v.id}">
       <div class="h"><div><b>${esc(v.name)}</b> ${v.active ? '<span class="pill booked">Active</span>' : '<span class="pill closed">Paused</span>'}<div class="note">${v.options.length} option${v.options.length === 1 ? "" : "s"} · replies in ${esc(NAMES[v.lang].lang_name)}</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-line btn-sm" type="button" data-toggle="${v.id}">${v.active ? "Pause" : "Activate"}</button><button class="btn btn-line btn-sm" type="button" data-edit="${v.id}">Edit</button></div></div>
-      <div class="linkrow"><code>${esc(location.origin + "/vendor?k=" + v.key)}</code><button class="btn btn-ink btn-sm" type="button" data-copy="${esc(location.origin + "/vendor?k=" + v.key)}">Copy inbox link</button><button class="btn btn-line btn-sm" type="button" data-rotate="${v.id}">New link</button></div>
+      ${A.messaging ? "" : `<p class="note">${v.email ? "Tickets are emailed to " + esc(v.email) + "." : "<b>Add an email</b> so this partner receives tickets."}</p>`}
+      <div class="linkrow" ${A.messaging ? "" : "hidden"}><code>${esc(location.origin + "/vendor?k=" + v.key)}</code><button class="btn btn-ink btn-sm" type="button" data-copy="${esc(location.origin + "/vendor?k=" + v.key)}">Copy inbox link</button><button class="btn btn-line btn-sm" type="button" data-rotate="${v.id}">New link</button></div>
       <div data-editbox hidden>${vendorForm(v, "v" + v.id)}<div style="margin-top:12px"><button class="btn btn-ink btn-sm" type="submit">Save changes</button></div></div>
     </form>`).join("")}`;
 }
@@ -158,6 +192,8 @@ async function renderEarnings() {
 /* ---------- events ---------- */
 document.addEventListener("click", async (e) => {
   const tb = e.target.closest("[data-tab]"); if (tb) { e.preventDefault(); setTab(tb.dataset.tab); return; }
+  const tf = e.target.closest("[data-tf]"); if (tf) { A.tfilter = tf.dataset.tf; renderTickets(); return; }
+  const rs = e.target.closest("[data-resend]"); if (rs) { rs.disabled = true; rs.textContent = "Sending…"; try { await api(`/api/admin/tickets/${rs.dataset.resend}/resend`, { method: "POST", auth: auth() }); toast("Ticket emailed"); } catch (err) { toast(err.message); } renderTickets(); return; }
   const cp = e.target.closest("[data-copy]");
   if (cp) { try { await navigator.clipboard.writeText(cp.dataset.copy); toast("Link copied"); } catch { const c = cp.parentElement.querySelector("code"); const r = document.createRange(); r.selectNodeContents(c); getSelection().removeAllRanges(); getSelection().addRange(r); toast("Press copy to copy the link"); } return; }
   const ed = e.target.closest("[data-edit]"); if (ed) { const box = ed.closest("[data-vendor]").querySelector("[data-editbox]"); box.hidden = !box.hidden; ed.textContent = box.hidden ? "Edit" : "Done"; return; }
@@ -169,10 +205,24 @@ document.addEventListener("click", async (e) => {
   }
 });
 document.addEventListener("change", async (e) => {
+  const tvs = e.target.closest("[data-tvendor]");
+  if (tvs) { updateTicket(tvs.dataset.tvendor, { vendorId: tvs.value || null, send: true }); return; }
+  const tss = e.target.closest("[data-tstatus]");
+  if (tss && tss.value) {
+    let amount;
+    if (tss.value === "booked") {
+      const cell = tss.closest("td");
+      if (!cell.querySelector("[data-amt]")) { cell.insertAdjacentHTML("beforeend", `<form data-amt="${tss.dataset.tstatus}" style="display:flex;gap:6px;margin-top:6px"><label class="sr" for="am-${tss.dataset.tstatus}">Amount</label><input id="am-${tss.dataset.tstatus}" inputmode="decimal" placeholder="Total $" style="width:90px;height:32px;border:1px solid var(--line);border-radius:10px;padding:0 8px"><button class="btn btn-ink btn-sm" type="submit" style="height:32px">Save</button></form>`); cell.querySelector("input").focus(); }
+      return;
+    }
+    updateTicket(tss.dataset.tstatus, { status: tss.value, amount }); return;
+  }
   const as = e.target.closest("[data-assign]");
   if (as) { try { await api(`/api/threads/${as.dataset.assign}/assign`, { method: "POST", body: { vendorId: as.value || null }, auth: auth() }); toast(as.value ? "Sent to partner" : "Moved to your inbox"); } catch (err) { toast(err.message); } }
 });
 document.addEventListener("submit", async (e) => {
+  const af = e.target.closest("[data-amt]");
+  if (af) { e.preventDefault(); const n = parseFloat(String(af.querySelector("input").value).replace(/[^0-9.]/g, "")); if (!(n > 0)) { toast("Add the total the customer is paying."); return; } updateTicket(af.dataset.amt, { status: "booked", amount: n }); return; }
   if (e.target.id === "nv") {
     e.preventDefault();
     try { await api("/api/admin/vendors", { method: "POST", body: readVendor("nv"), auth: auth() }); toast("Partner added. Copy their inbox link and send it to them."); renderPartners(); } catch (err) { toast(err.message); }
@@ -187,11 +237,15 @@ document.addEventListener("submit", async (e) => {
 async function boot() {
   if (!pw) return login();
   try { await loadVendors(); } catch (e) { ss.del("maree-admin"); pw = ""; return login(e.status === 401 ? "Please sign in again." : e.message); }
+  try { A.messaging = !!(await api("/api/config")).messaging; } catch {}
+  A.tab = A.messaging ? "inbox" : "tickets";
   shell();
-  A.live = new Live({ admin: pw });
-  connBanner(A.live, makeT("en"));
-  A.live.on("unauthorized", () => { ss.del("maree-admin"); pw = ""; login("Please sign in again."); });
-  setTab("inbox");
+  if (A.messaging) {
+    A.live = new Live({ admin: pw });
+    connBanner(A.live, makeT("en"));
+    A.live.on("unauthorized", () => { ss.del("maree-admin"); pw = ""; login("Please sign in again."); });
+  } else document.getElementById("al").hidden = true;
+  setTab(A.tab);
 }
 boot();
 })();
